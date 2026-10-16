@@ -1,10 +1,13 @@
-import re
-p='sf2-web-guide.html'
+import re, os, sys
+HERE=os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, '..', 'shared'))
+from sf2_schedule import SF2_MS_LABELS
+p=os.path.join(HERE,'sf2-web-guide.html')
 s=open(p,encoding='utf-8').read()
 m=re.search(r'<tr class="g-group"><td class="g-name" colspan="2"><b>마일스톤</b></td><td class="g-track"><div class="g-lane" style="width:(\d+)px">(.*?)<span class="g-today"',s,flags=re.S)
 inner=m.group(2)
 dias=re.findall(r'<span class="g-ms" style="left:(\d+)px" title="([^"]+)"></span>',inner)
-labels={'10/2':('10/2 킥오프','l',4),'11/13':('11/13 심사용 홈페이지','r',4),'11/17':('11/17 사전예약 시작','l',24),'12/8':('12/8 오픈','r',4)}
+labels=SF2_MS_LABELS
 new=''
 for left,title in dias:
     key=title.split()[0]

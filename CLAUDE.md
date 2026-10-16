@@ -4,23 +4,34 @@
 
 ## 게시 중인 페이지
 
-| 페이지 | 원본 | 아티팩트 |
+| 페이지 | 생성 결과 | 아티팩트 |
 |---|---|---|
 | 스포2 웹 업무 가이드 | `sf2/sf2-web-guide.html` | https://claude.ai/artifact/U44ZKSYqTNmf6L6irVgchM |
-| 서비스개발실 웹 업무 | `svcdev/web-ops.snapshot-1016.html` (게시본 스냅샷, 생성 스크립트 없음) | https://claude.ai/artifact/UCMngXt4KfXzHPxpDJJjUt |
+| 서비스개발실 웹 업무 | `svcdev/web-ops.html` | https://claude.ai/artifact/UCMngXt4KfXzHPxpDJJjUt |
 
-- 같은 아티팩트 URL로 다시 게시해야 링크가 유지된다. 다른 세션에서는 `url`을 넘겨 게시하고, 그 전에 반드시 아티팩트를 read 한다.
+- 같은 아티팩트 URL로 다시 게시해야 링크가 유지된다. 이 세션에서 처음 게시하는 경우 `url`을 넘기고, 그 전에 아티팩트를 read 한다.
 - 스포2 링크는 컨플루언스(SF2 KOR LAUNCH 주간 업무 공유)에 공유되어 있다. URL을 바꾸지 않는다.
 
-## 스포2 간트 갱신
+## 원본 구조 (어디를 고치나)
+
+| 바뀐 내용 | 고칠 곳 |
+|---|---|
+| 스포2 일정 · 마일스톤 · 간트 막대 · 2주 안 스포2 일정 | `shared/sf2_schedule.py` |
+| 스포2 본문 (역할, 업무별 담당, 팀별 현황, 세부 일정, 미결, 액션, 회의록, 논의 안건) | `sf2/sf2-web-guide.html` 직접 수정 |
+| 다른 프로젝트, 인원, 운영 서비스 이슈, 2주 안 일정(스포2 제외) | `svcdev/data.py` |
+| 서비스개발실 페이지 레이아웃 | `svcdev/build.py` |
+
+서비스개발실 페이지의 스포2 부분(팀별 현황, 세부 일정, 미결, 액션, 회의록)은 `sf2/sf2-web-guide.html`에서 그대로 가져온다. 그래서 스포2 내용은 가이드 HTML과 `shared/sf2_schedule.py` 두 곳만 고치면 두 페이지가 같이 바뀐다.
+
+## 빌드
 
 ```
-cd sf2
-python3 gantt2.py && python3 msfix.py   # gantt2.py 의 teams / miles 데이터만 고친다
-python3 shot.py                         # 일정표 탭 캡처 (shot.png, crop.png)
+python3 build_all.py      # 스포2 간트 → 마일스톤 라벨 → 서비스개발실 페이지 순서로 다시 생성
+cd sf2 && python3 shot.py                       # 스포2 일정표 캡처
+cd svcdev && NODE_PATH=$(npm root -g) node shot.js  # 서비스개발실 탭별 캡처
 ```
 
-마일스톤을 바꾸면 `msfix.py`의 `labels`도 같이 고친다 (가까운 날짜는 위·아래 줄로 나눔).
+빌드 후 두 페이지를 각각 기존 URL로 다시 게시한다. 스포2 내용을 바꿨으면 두 페이지 모두 게시한다.
 
 ## 작성 규칙 (docs/handoff/03_운영_방식.md 요약)
 
@@ -31,7 +42,3 @@ python3 shot.py                         # 일정표 탭 캡처 (shot.png, crop.p
 - 설명조 문장, 양식 섹션 넣지 않음. 사람 평가·인사·사적인 사유 넣지 않음.
 - 녹음 텍스트에서 이름이 불확실하면 이름을 붙이지 않고 확인 필요로 둔다.
 - 한 곳을 고치면 같은 내용이 있는 표·카드·간트·안건을 모두 찾아 맞춘다.
-
-## 남은 작업
-
-- 두 페이지를 하나의 데이터 파일 + 생성 스크립트로 합치기 (서비스개발실 페이지의 원래 data.py/build.py는 다른 세션에 있어 복구 불가, 게시본에서 다시 추출해야 함).

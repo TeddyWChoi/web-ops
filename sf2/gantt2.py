@@ -1,49 +1,19 @@
-import re
+import re, os
 from datetime import date, timedelta
-p='sf2-web-guide.html'
+p=os.path.join(os.path.dirname(os.path.abspath(__file__)),'sf2-web-guide.html')
 s=open(p,encoding='utf-8').read()
 D=lambda m,d: date(2026,m,d)
 START=D(10,1); END=D(12,12); PX=8
 days=(END-START).days+1; W=days*PX
 x=lambda d:(d-START).days*PX
-TODAY=D(10,16)
 # (team, owner, rows) ; row=(name, start, end, state, est, note)
-teams=[
- ('웹기획 · 디자인','테디 팀장',[
-   ('홈페이지 디자인 · 검수',D(10,2),D(10,8),'done',False,'완료'),
-   ('사전예약 웹기획 재검토',D(10,8),D(10,13),'done',False,'완료'),
-   ('사전예약 디자인',D(10,9),D(10,15),'done',False,'10/15 개발팀 전달 완료'),
-   ('개발 중 디자인 대응 · QA 화면 확인',D(10,16),D(12,7),'now',True,'수정 마감까지'),
- ]),
- ('웹 개발','김영환 팀장 · 오중수',[
-   ('개발 총괄 · DB 설계 · 김영환 팀장',D(10,12),D(12,7),'now',True,'전체 개발 진행 총괄'),
-   ('심사용 홈페이지 · 오중수',D(10,12),D(11,13),'now',True,'PG·연령제한 심사용, 구조·구성 확인 수준'),
-   ('실서비스 기능 · QA · 오중수',D(11,13),D(12,10),'warn',True,'12/10 목표 (오픈 12/8보다 늦음)'),
-   ('사전예약 개발 · 오중수',D(10,15),D(11,13),'now',True,'홈페이지와 동시 진행'),
-   ('19세 미만 접근 제한 · 인증 구조 재검토',None,None,'tbd',False,'IT DEV·플랫폼·사업, 다음 회의 공유'),
-   ('한국 플랫폼 연동 · SF2 연결 · 오중수',None,None,'tbd',False,'기한 미정'),
- ]),
- ('사업','김충곤 팀장 · 고민제 PM',[
-   ('사전예약 보상 아이템명·이미지 전달',D(10,13),D(10,15),'done',False,'완료'),
-   ('PG 2차 미팅',D(10,23),D(10,23),'plan',True,'10/23 전후, 김충곤·김영환 팀장'),
-   ('19세 등급 신청 · 결과 대기',D(10,28),D(11,20),'warn',True,'10/28 신청, 11/18~20 결과 예상'),
-   ('카드사 심사',D(11,13),D(12,4),'warn',True,'2주~최대 3주, 이후 약 1주 테스트'),
-   ('사전예약 운영',D(11,17),D(12,7),'plan',False,'11/17 시작'),
- ]),
- ('인프라','에릭 실장 · 션 팀장',[
-   ('라이브 서버 세팅 · 전달',D(10,19),D(11,6),'now',True,'빠르면 10월 말, 늦어도 11/6'),
- ]),
- ('수정 마감 · QA (제안)','김충곤 팀장 확정 필요',[
-   ('사전예약 수정 마감',D(11,6),D(11,6),'plan',True,'11/6 이후 수정 받지 않음'),
-   ('사전예약 QA · 콘텐츠 반영',D(11,9),D(11,13),'plan',True,'사전예약 시작 전 1주'),
-   ('심사용 홈페이지 QA · 수정',D(11,10),D(11,12),'plan',True,'11/9 개발 완료 전제'),
-   ('홈페이지 1차 QA',D(11,16),D(11,27),'plan',True,'완성된 화면부터 점검, 지승철 참여'),
-   ('홈페이지 수정 · 콘텐츠 입력 마감',D(11,27),D(11,27),'plan',True,'11/27 이후 수정 받지 않음'),
-   ('홈페이지 2차 QA',D(11,30),D(12,4),'plan',True,'수정 반영 확인'),
-   ('최종 확인',D(12,7),D(12,7),'plan',True,'오픈 전날'),
- ]),
-]
-miles=[(D(10,2),'킥오프'),(D(11,13),'심사용 홈페이지'),(D(11,17),'사전예약 시작'),(D(12,8),'웹사이트 오픈')]
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'shared'))
+from sf2_schedule import SF2_TEAMS, SF2_MILES, SF2_BASE
+TODAY=SF2_BASE
+# shared/sf2_schedule.py 가 원본. 여기서는 (업무명, 시작, 끝, 상태, 추정, 문구)만 사용
+teams=[(t,o,[r[:6] for r in rows]) for t,o,rows in SF2_TEAMS]
+miles=SF2_MILES
 first_mon=START+timedelta(days=(7-START.weekday())%7)
 grid_off=x(first_mon)
 def track(inner):

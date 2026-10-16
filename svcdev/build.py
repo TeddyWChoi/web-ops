@@ -237,7 +237,8 @@ def upcoming_table():
     base = (BASE.month, BASE.day)
     rowf = lambda d, p, c, w, sc, s: f'<tr><td class="d">{d}</td><td><span class="ptag">{p}</span></td><td>{esc(c)}</td><td>{esc(w)}</td><td>{st_badge(sc, s)}</td></tr>'
     items = sorted(UPCOMING, key=_ukey)
-    up = [r for r in items if _uend(r) is None or _uend(r) >= base]
+    lim = BASE + timedelta(days=14); lim = (lim.month, lim.day)
+    up = [r for r in items if (_uend(r) is None or _uend(r) >= base) and _ukey(r) <= lim]
     past = [r for r in items if _uend(r) is not None and _uend(r) < base]
     html_ = ('<div class="table-box"><table><thead><tr><th>날짜</th><th>프로젝트</th><th>내용</th><th>담당</th><th>상태</th></tr></thead><tbody>'
             + ''.join(rowf(*r) for r in up) + '</tbody></table></div>')
@@ -500,7 +501,7 @@ GUIDE = '''
 GUIDE = GUIDE.replace('{TEAM_HTML}', team_html())
 # ---------- 조립 ----------
 sf2 = next(p for p in PROJECTS if p['id'] == 'sf2')
-open_rows = ''.join(f'<tr data-p="sf2"><td><span class="ptag">스포2</span></td>{r}</tr>' for r in sf2_open_rows)
+open_rows = ''.join(f'<tr data-p="sf2"><td><span class="ptag">스포2</span></td>{r.replace(chr(60)+"td class=\"who\">", chr(60)+"td class=\"who\" style=\"white-space:normal;min-width:300px\">", 1)}</tr>' for r in sf2_open_rows)
 def _row(pid, tag, *cells):
     return f'<tr data-p="{pid}"><td><span class="ptag">{tag}</span></td>' + ''.join(f'<td{" class=who" if i == 0 else ""}>{c}</td>' for i, c in enumerate(cells)) + '</tr>'
 open_rows += _row('uwo', 'UWO', '코브 수정 방식과 기간', '김영환 팀장 (소스 확인 후)', '코브 개편 · 미스테리 코브 일정')
@@ -679,13 +680,13 @@ page = f'''<!doctype html>
 
       <section id="p-sf2" class="proj" hidden>
         <h2>{esc(sf2["name"])} {st_badge(sf2["status"], sf2["status_txt"])}</h2>
-        <dl class="pkv"><dt>결정권자</dt><dd>김충곤 팀장 (부재 시 고민제 PM)</dd><dt>PM</dt><dd>고민제 PM</dd><dt>웹기획</dt><dd>테디 팀장</dd><dt>디자인</dt><dd>테디 팀장</dd><dt>웹 개발</dt><dd>오중수 (총괄 김영환 팀장)</dd><dt>오픈 목표</dt><dd>12/8 웹사이트 오픈</dd><dt>정기 회의</dt><dd>매주 금요일 9:30~10:00</dd><dt>적용 범위</dt><dd>공식 웹사이트, 사전예약 페이지, 이벤트 · 프로모션 페이지</dd><dt>운영 가이드</dt><dd><a href="https://claude.ai/code/artifact/db142ad6-834e-4dc6-8554-5881f11c3448" target="_blank" rel="noopener">스포2 웹 업무 가이드</a> (업무별 담당, 금요일 회의, 논의 안건)</dd></dl>
+        <dl class="pkv"><dt>결정권자</dt><dd>김충곤 팀장 (부재 시 고민제 PM)</dd><dt>PM</dt><dd>고민제 PM</dd><dt>웹기획</dt><dd>테디 팀장</dd><dt>디자인</dt><dd>테디 팀장</dd><dt>웹 개발</dt><dd>오중수 (총괄 김영환 팀장)</dd><dt>오픈 목표</dt><dd>12/8 웹사이트 오픈</dd><dt>정기 회의</dt><dd>매주 금요일 9:30~10:00</dd><dt>적용 범위</dt><dd>공식 웹사이트, 사전예약 페이지, 이벤트 · 프로모션 페이지</dd><dt>운영 가이드</dt><dd><a href="https://claude.ai/artifact/U44ZKSYqTNmf6L6irVgchM" target="_blank" rel="noopener">스포2 웹 업무 가이드</a> (업무별 담당, 금요일 회의, 논의 안건)</dd></dl>
 
         <div class="proj-sec" id="sf2-todo"><h3>확인 필요 항목</h3>{sf2_todo}</div>
         <div class="proj-sec" id="sf2-schedule"><h3>상세 일정</h3>
         {project_gantt(SF2_RANGE, SF2_TEAMS, SF2_MILES)}
         </div>
-        <div class="proj-sec">{sf2_status.replace('<h3>팀별 현황', '<h3>팀별 현황') if '<h3>팀별 현황' in sf2_status else '<h3>팀별 현황 <span class="asof">10/12 기준</span></h3>' + sf2_status}</div>
+        <div class="proj-sec">{sf2_status.replace('<h3>팀별 현황', '<h3>팀별 현황') if '<h3>팀별 현황' in sf2_status else re.search(r'<h3>팀별 현황 <span class="asof">[^<]*</span></h3>', ref).group(0) + sf2_status}</div>
         <div class="proj-sec"><h3>세부 일정</h3>{sf2_sched}{sf2_note}</div>
       </section>
 
