@@ -1,0 +1,851 @@
+<title>스포2 웹 업무 가이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: 문서형 2단 — 데스크톱은 왼쪽 고정 목차 + 본문, 모바일은 1단. 표는 각자 가로 스크롤. */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --fg: #1b2230;
+  --muted: #5d6677;
+  --line: #dde1e8;
+  --accent: #2b4fb8;
+  --accent-soft: #e8edfa;
+  --flag: #9a5b00;
+  --flag-soft: #fdf1dc;
+  --ok: #1f7a4d;
+  --ok-soft: #e3f3ea;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151b; --surface: #1a1f28; --fg: #e4e8ef; --muted: #9aa3b2; --line: #2c3340;
+    --accent: #8aa6ff; --accent-soft: #212b45; --flag: #f0b45a; --flag-soft: #352a17;
+    --ok: #6fd3a0; --ok-soft: #173126; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151b; --surface: #1a1f28; --fg: #e4e8ef; --muted: #9aa3b2; --line: #2c3340;
+  --accent: #8aa6ff; --accent-soft: #212b45; --flag: #f0b45a; --flag-soft: #352a17;
+  --ok: #6fd3a0; --ok-soft: #173126; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.7; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 80px; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 48px; }
+@media (max-width: 860px) { .wrap { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-inline: 16px; padding-block: 24px 60px; } nav.toc { position: static !important; } }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; display: grid; gap: 4px; font-size: 13.5px; }
+nav.toc .label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+nav.toc a { color: var(--muted); text-decoration: none; padding: 4px 10px; border-left: 2px solid var(--line); }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); border-left-color: var(--accent); outline: none; }
+main { min-width: 0; display: grid; gap: 56px; }
+header.doc { display: grid; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 28px; }
+.meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: .04em; display: flex; flex-wrap: wrap; gap: 6px 16px; }
+h1 { font-size: 30px; line-height: 1.3; margin: 0; font-weight: 700; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font-size: 21px; margin: 0; font-weight: 700; text-wrap: balance; display: flex; align-items: baseline; gap: 10px; }
+h2 .no { font-family: var(--font-mono); font-size: 13px; color: var(--accent); font-weight: 500; }
+h3 { font-size: 16px; margin: 0; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+section { display: grid; gap: 18px; scroll-margin-top: 24px; }
+.lead { color: var(--muted); font-size: 16px; }
+.principle { background: var(--accent-soft); border-radius: 8px; padding: 18px 20px; display: grid; gap: 8px; }
+.principle strong { color: var(--accent); }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; max-width: 70ch; }
+.chip { display: inline-block; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--flag-soft); color: var(--flag); white-space: nowrap; vertical-align: 1px; }
+.chip.ok { background: var(--ok-soft); color: var(--ok); }
+.table-box { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+th { font-size: 12.5px; font-weight: 600; color: var(--muted); background: var(--bg); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.who { font-weight: 600; white-space: nowrap; }
+.open-table { min-width: 0; table-layout: fixed; }
+.open-table td, .open-table td.who { white-space: normal; word-break: keep-all; overflow-wrap: break-word; }
+@media (max-width: 600px) {
+  .open-table colgroup, .open-table thead { display: none; }
+  .open-table, .open-table tbody, .open-table tr, .open-table td { display: block; width: 100%; }
+  .open-table tr { padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .open-table tr:last-child { border-bottom: 0; }
+  .open-table td { border: 0 !important; padding: 2px 0 !important; }
+  .open-table td:nth-child(n+2) { font-size: 13px; color: var(--muted); }
+  .open-table td:nth-child(2)::before { content: "결정 · "; font-weight: 600; }
+  .open-table td:nth-child(3)::before { content: "막힘 · "; font-weight: 600; }
+}
+.open-table th { white-space: normal; }
+.steps { display: grid; gap: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); overflow: hidden; }
+.step { display: grid; grid-template-columns: 52px minmax(0, 1fr); border-bottom: 1px solid var(--line); }
+.step:last-child { border-bottom: 0; }
+.step .n { font-family: var(--font-mono); font-size: 13px; color: var(--accent); padding: 16px 0 0 18px; }
+.step .body { padding: 14px 18px 16px 0; display: grid; gap: 8px; min-width: 0; }
+.kv { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 2px 12px; font-size: 14px; }
+.kv dt { color: var(--muted); font-size: 13px; }
+.kv dd { margin: 0; }
+.cases { display: grid; gap: 14px; }
+.case { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; display: grid; gap: 10px; }
+.case ol { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; }
+.case .dont { font-size: 13.5px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
+.templates { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.tpl { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+.tpl .head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.tpl pre { margin: 0; padding: 14px; font-family: var(--font-body); font-size: 13.5px; line-height: 1.75; white-space: pre-wrap; overflow-x: auto; }
+button.copy { font: inherit; font-size: 12.5px; font-weight: 600; color: var(--accent); background: var(--accent-soft); border: 0; border-radius: 6px; padding: 5px 10px; cursor: pointer; }
+button.copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.todo { display: grid; gap: 8px; }
+.todo li { max-width: 70ch; }
+footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 20px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style><style>
+.who-table td.task { font-weight: 600; white-space: nowrap; }
+.who-table td.do { font-weight: 600; color: var(--accent); }
+.who-table td.ok { font-weight: 600; }
+.who-table td.sup { color: var(--muted); }
+.who-table td.dash { color: var(--line); }
+.who-table { min-width: 560px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid var(--line); margin-top: -20px; }
+.tabs a { text-decoration: none; color: var(--muted); font-weight: 600; font-size: 14.5px; padding: 10px 14px; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tabs a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); }
+.tabs a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.panel { display: grid; gap: 56px; }
+.wrap.single { grid-template-columns: minmax(0, 1fr); max-width: 920px; }
+.wrap.single nav.toc { display: none; }
+.risk { border: 1px solid var(--flag); background: var(--flag-soft); border-radius: 8px; padding: 16px 18px; display: grid; gap: 6px; }
+.risk strong { color: var(--flag); }
+td.d { font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
+.st { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.st.plan { background: var(--accent-soft); color: var(--accent); }
+.st.open, .st.chk { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.st.warn { background: var(--flag-soft); color: var(--flag); }
+.st.done { background: var(--ok-soft); color: var(--ok); }
+.note li { color: var(--muted); font-size: 14px; }
+details.mtg { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+details.mtg summary { cursor: pointer; padding: 16px 20px; display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+details.mtg summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mdate { font-family: var(--font-mono); font-size: 13px; color: var(--accent); }
+.mtitle { font-weight: 700; }
+.mbody { padding: 0 20px 22px; display: grid; gap: 14px; }
+.mbody h3 { margin-top: 8px; }
+.ctx { color: var(--muted); font-size: 14px; }
+.ms-box { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding-block: 8px; padding-inline: 28px; }
+.ms { position: relative; min-width: 860px; height: 268px; }
+.ms-track { position: absolute; left: 0; right: 0; top: 134px; height: 4px; border-radius: 2px; background: var(--line); }
+.ms-progress { position: absolute; left: 0; top: 134px; height: 4px; border-radius: 2px; background: var(--ok); }
+.ms-riskband { position: absolute; top: 126px; height: 20px; background: var(--flag-soft); border-top: 2px dashed var(--flag); border-bottom: 2px dashed var(--flag); }
+.ms-risklabel { position: absolute; top: 152px; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: var(--flag); white-space: nowrap; }
+.ms-today { position: absolute; top: 100px; height: 140px; border-left: 2px solid var(--accent); }
+.ms-today span { position: absolute; top: 140px; left: -2px; transform: translateX(-50%); font-size: 11.5px; font-weight: 700; color: var(--accent); white-space: nowrap; background: var(--surface); padding: 0 4px; }
+.ms-dot { position: absolute; top: 128px; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--surface); border: 3px solid var(--accent); z-index: 2; }
+.ms-range { position: absolute; top: 128px; height: 16px; border-radius: 8px; background: var(--surface); border: 3px solid var(--accent); z-index: 2; min-width: 16px; }
+.ms-dot.done, .ms-range.done { background: var(--ok); border-color: var(--ok); }
+.ms-dot.warn, .ms-range.warn { border-color: var(--flag); }
+.ms-stem { position: absolute; width: 0; border-left: 1px solid var(--line); }
+.ms-stem.above.l1 { top: 86px; height: 42px; }
+.ms-stem.above.l2 { top: 30px; height: 98px; }
+.ms-stem.below.l1 { top: 144px; height: 42px; }
+.ms-label { position: absolute; display: grid; gap: 1px; font-size: 13px; line-height: 1.35; white-space: nowrap; transform: translateX(-50%); text-align: center; }
+.ms-label.left { transform: translateX(-12px); text-align: left; }
+.ms-label.right { transform: translateX(calc(-100% + 12px)); text-align: right; }
+.ms-label.above.l1 { top: 46px; }
+.ms-label.above.l2 { top: -6px; }
+.ms-label.below.l1 { top: 188px; }
+.ms-label span { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ms-label.warn b { color: var(--flag); }
+.ms-label.done b { color: var(--ok); }
+.ms-month { position: absolute; bottom: 0; font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: .06em; }
+.teams { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.team { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.team .th { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.team .th b { font-size: 15.5px; }
+.team .th span { font-size: 12.5px; color: var(--muted); }
+.team dl { margin: 0; display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 6px 10px; font-size: 14px; }
+.team dt { font-size: 12px; font-weight: 600; padding-top: 2px; }
+.team dt.done { color: var(--ok); }
+.team dt.now { color: var(--accent); }
+.team dt.next { color: var(--muted); }
+.team dt.wait { color: var(--flag); }
+.team dd { margin: 0; }
+@media (max-width: 640px) { .teams { grid-template-columns: minmax(0, 1fr); } }
+.asof { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.g-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--muted); }
+.g-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.g-key { display: inline-block; width: 22px; height: 10px; border-radius: 3px; }
+.g-key-ms { display: inline-block; width: 10px; height: 10px; transform: rotate(45deg); background: var(--fg); }
+.g-box { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table.gantt { border-collapse: separate; border-spacing: 0; min-width: 0; width: auto; font-size: 13px; }
+table.gantt th, table.gantt td { padding: 0; border-bottom: 1px solid var(--line); vertical-align: middle; }
+table.gantt th { background: var(--bg); }
+.g-name { position: sticky; left: 0; z-index: 3; background: var(--surface); min-width: 172px; max-width: 172px; padding: 8px 12px !important; border-right: 1px solid var(--line); }
+th.g-name { background: var(--bg); z-index: 4; }
+.g-note { min-width: 108px; max-width: 108px; padding: 6px 10px !important; border-right: 1px solid var(--line); white-space: normal; }
+.g-task { padding-left: 24px !important; white-space: normal; line-height: 1.4; }
+tr.g-group td { background: var(--bg); }
+tr.g-group .g-name { background: var(--bg); }
+tr.g-group .g-name b { font-size: 13.5px; }
+tr.g-group .g-name span { display: block; font-size: 12px; color: var(--muted); font-weight: 400; }
+.g-lane { position: relative; height: 34px; background-image: repeating-linear-gradient(to right, var(--line) 0 1px, transparent 1px var(--wk)); background-position: var(--grid-off) 0; }
+tr.g-group .g-lane { height: 30px; }
+.g-hlane { height: 46px; background: none; }
+.g-m { position: absolute; top: 5px; font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; color: var(--fg); padding-left: 4px; border-left: 1px solid var(--muted); }
+.g-w { position: absolute; top: 25px; font-size: 10.5px; color: var(--muted); padding-left: 3px; font-variant-numeric: tabular-nums; }
+.g-todaytag { position: absolute; top: 2px; transform: translateX(-50%); font-size: 11px; font-weight: 700; color: var(--surface); background: var(--accent); border-radius: 4px; padding: 0 5px; white-space: nowrap; z-index: 2; }
+.g-today { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--accent); opacity: .55; z-index: 1; }
+.g-bar { position: absolute; top: 9px; height: 16px; border-radius: 4px; z-index: 2; }
+.g-bar.done, .g-key.done { background: var(--ok); }
+.g-bar.now, .g-key.now { background: var(--accent); }
+.g-bar.plan, .g-key.plan { background: var(--accent-soft); border: 1.5px solid var(--accent); }
+.g-bar.warn, .g-key.warn { background: var(--flag-soft); border: 1.5px solid var(--flag); }
+.g-bar.est, .g-key.est { border-style: dashed; }
+.g-bar.now.est { background: var(--accent); border: 1.5px dashed var(--surface); }
+tr.g-msrow .g-lane { height: 46px; }
+.g-ms { position: absolute; top: 9px; width: 12px; height: 12px; margin-left: -6px; transform: rotate(45deg); background: var(--fg); z-index: 2; }
+.g-mslabel { position: absolute; top: 7px; font-size: 12px; font-weight: 600; white-space: nowrap; z-index: 2; background: var(--bg); padding: 0 3px; }
+.g-st { font-size: 12px; font-weight: 600; }
+.g-st.done { color: var(--ok); } .g-st.now { color: var(--accent); } .g-st.plan { color: var(--muted); } .g-st.warn { color: var(--flag); } .g-st.tbd { color: var(--muted); font-weight: 400; }
+.agendas { display: grid; gap: 12px; }
+.agenda { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 20px; display: grid; gap: 10px; }
+.ag-head { display: flex; align-items: baseline; gap: 10px; }
+.ag-no { font-family: var(--font-mono); font-size: 13px; color: var(--accent); }
+.ag-kv { margin: 0; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 6px 12px; font-size: 14px; }
+.ag-kv dt { font-size: 12.5px; font-weight: 600; color: var(--muted); padding-top: 2px; }
+.ag-kv dd { margin: 0; max-width: 72ch; }
+.ag-kv dt.ag-dec { color: var(--accent); }
+.ag-res { font-weight: 600; }
+.ag-res.done { color: var(--ok); }
+.ag-res.part { color: var(--flag); }
+.ag-res.open { color: var(--muted); font-weight: 400; }
+.ag-blank { color: var(--muted); border-bottom: 1px dashed var(--line); padding-bottom: 4px; }
+.ag-head { cursor: pointer; user-select: none; border-radius: 4px; }
+.ag-head:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.ag-head h3 { flex: 1; }
+.ag-chev { flex: none; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); margin-right: 4px; align-self: center; transition: transform .15s; }
+.agenda.closed .ag-chev { transform: rotate(-45deg); }
+.agenda.closed .ag-kv > dt:not(.ag-dec), .agenda.closed .ag-kv > dd:not(.ag-res) { display: none; }
+.ag-tools { display: flex; justify-content: flex-end; margin-bottom: -4px; }
+.ag-toggle-all { font: inherit; font-size: 13px; color: var(--accent); background: none; border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+.raci td.c { text-align: center; white-space: nowrap; }
+.raci th.c { text-align: center; }
+.tag { display: inline-block; min-width: 40px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 6px; }
+.tag.d { background: var(--accent); color: var(--surface); }
+.tag.r { background: var(--accent-soft); color: var(--accent); }
+.tag.s { background: var(--ok-soft); color: var(--ok); }
+.tag.i { color: var(--muted); border: 1px solid var(--line); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.people { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.person { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
+.person .name { font-weight: 700; font-size: 16px; }
+.person .role { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em; color: var(--accent); text-transform: uppercase; }
+.person p { font-size: 14px; color: var(--muted); }
+</style>
+
+<div class="wrap">
+  <nav class="toc" aria-label="목차">
+    <span class="label">목차</span>
+    <a href="#about">이 문서에 대해</a>
+    <a href="#team">팀 구성</a>
+    <a href="#raci">업무별 담당</a>
+    <a href="#flow">업무 흐름</a>
+    <a href="#cases">상황별 대응</a>
+    <a href="#meeting">금요일 회의</a>
+    <a href="#todo">확인 필요 항목</a>
+  </nav>
+
+  <main>
+    <header class="doc">
+      <div class="meta"><span>초안 v1.0</span><span>2026.10.12</span><span>작성 테디 팀장 (디자인팀)</span></div>
+      <h1>스페셜포스2 웹 업무</h1>
+    </header>
+    <div class="tabs" role="tablist"><a href="#guide" id="tab-guide">업무 가이드</a><a href="#schedule" id="tab-schedule">일정표</a><a href="#minutes" id="tab-minutes">회의록 · 미결</a><a href="#agenda" id="tab-agenda">논의 안건</a></div>
+
+    <div id="panel-guide" class="panel">
+
+    <section id="about">
+      <h2><span class="no">00</span>이 문서에 대해</h2>
+      <div class="principle">
+        <p><strong>스포2 웹 업무는 고민제 PM이 중심이 되어 진행하고, 최종 결정은 김충곤 팀장이 합니다.</strong></p>
+        <p>웹 관련 요청, 문의, 검수 의견은 고민제 PM을 통해 주고받습니다. 고민제 PM을 통해 해결되지 않는 건은 김충곤 팀장에게 올립니다. 일정, 범위, 오픈 여부는 김충곤 팀장의 결정으로 확정되며, 대표님 결정이 필요한 사항은 김충곤 팀장이 올립니다. 실무자 사이의 합의만으로는 일정이나 범위가 바뀌지 않습니다.</p>
+      </div>
+      <ul class="plain">
+        <li><b>적용 범위</b> 스페셜포스2 공식 웹사이트, 재런칭 페이지, 이벤트·프로모션 페이지</li>
+        <li><b>소통 도구</b> 웹 작업·수정 요청은 지라, 디자인팀과 사업팀 간 소통은 팀즈. 일정 변경과 긴급 이슈는 SF2 공통 채널</li>
+        <li><b>개정</b> 금요일 회의에서 수정 의견을 받아 반영</li>
+      </ul>
+    </section>
+
+    <section id="team">
+      <h2><span class="no">01</span>팀 구성</h2>
+      <div class="people">
+        <div class="person"><span class="role">사업 총괄 · 최종 결정</span><span class="name">김충곤 팀장</span><p>스포2 사업 총괄. 일정, 범위, 디자인, 오픈을 최종 결정하고 대표님 보고를 맡습니다. 인게임은 직접 관리하고, 등급·PG 등 아웃게임 일부를 지원합니다. 정기 회의에 함께 참석해 진행을 확인합니다.</p></div>
+        <div class="person"><span class="role">PM</span><span class="name">고민제 PM</span><p>스포2 웹 업무의 진행과 소통 창구를 맡습니다. 웹 작업·수정 요청, 회의 소집과 진행, 회의 내용 정리·공유, 일정 관리(WBS·일정표)와 주간 보고, 검수 의견 취합, 오픈 전 콘텐츠 준비와 오픈 공지를 맡습니다. 김충곤 팀장 부재 시 대리합니다.</p></div>
+        <div class="person"><span class="role">와이어프레임 지원 · QA</span><span class="name">지승철</span><p>사전예약 와이어프레임을 마무리할 때까지 지원합니다. 이후 사이트 QA 단계에 다시 참여합니다.</p></div>
+        <div class="person"><span class="role">웹기획 · 디자인</span><span class="name">테디 팀장</span><p>페이지 구성, 화면별 상태, 사용 흐름을 설계하고 디자인 산출물을 맡습니다. 이 가이드를 관리하고, 일정·진행 관리 양식을 제공합니다.</p></div>
+        <div class="person"><span class="role">개발 총괄 · DB 설계</span><span class="name">김영환 팀장</span><p>개발 공수와 일정을 산정하고, DB 설계와 전체 개발 진행 상황을 총괄합니다. 지연이 생기면 사유와 새 일정을 직접 보고합니다.</p></div>
+        <div class="person"><span class="role">웹 개발</span><span class="name">오중수</span><p>한국 공식 홈페이지와 사전예약 페이지 개발, 한국 플랫폼 연동과 SF2 연결을 맡습니다. 한국 API·로그인 테스트, 19세 인증 처리가 포함됩니다.</p></div>
+        <div class="person"><span class="role">SF2 클라이언트 개발 총괄</span><span class="name">김용진 팀장</span><p>스페셜포스2 개발팀 팀장입니다. 게임 클라이언트와 인게임 개발을 총괄합니다. 웹과 연결되는 부분(게임 로그인 시 19세 차단 등)을 맡습니다.</p></div>
+        <div class="person"><span class="role">인프라 · 기술 자문</span><span class="name">에릭 실장</span><p>SRE 인프라실 실장입니다. 션 팀장과 함께 인프라 업무를 맡고, 프로젝트 진행을 지켜보면서 잘 되고 있는지 판단하고 조언합니다.</p></div>
+        <div class="person"><span class="role">인프라</span><span class="name">션 팀장</span><p>인프라팀 팀장입니다. 인프라·서버에 영향이 있는 작업을 맡습니다.</p></div>
+      </div>
+    </section>
+
+    <section id="raci">
+      <h2><span class="no">02</span>업무별 담당</h2>
+      <div class="table-box">
+        <table class="who-table">
+          <thead><tr><th>업무</th><th>하는 사람</th><th>확정</th><th>돕는 사람</th></tr></thead>
+          <tbody>
+            <tr><td class="task">웹 작업 · 수정 요청</td><td class="do">고민제 PM (사업팀 의견 정리 후 요청)</td><td class="ok">김충곤 팀장</td><td class="dash">—</td></tr>
+            <tr><td class="task">요구사항 정리</td><td class="do">고민제 PM</td><td class="ok">김충곤 팀장</td><td class="sup">테디 팀장</td></tr>
+            <tr><td class="task">웹기획</td><td class="do">테디 팀장</td><td class="ok">고민제 PM 확인 → 김충곤 팀장</td><td class="sup">김영환 팀장</td></tr>
+            <tr><td class="task">일정 산정</td><td class="do">김영환 팀장 (개발), 테디 팀장 (디자인)</td><td class="ok">김충곤 팀장 (일정 확정)</td><td class="sup">고민제 PM (일정표 반영)</td></tr>
+            <tr><td class="task">디자인</td><td class="do">테디 팀장</td><td class="ok">고민제 PM 확인 → 김충곤 팀장</td><td class="dash">—</td></tr>
+            <tr><td class="task">웹 개발 (홈페이지, 사전예약, 한국 플랫폼 연동)</td><td class="do">오중수</td><td class="dash">—</td><td class="sup">김영환 팀장 (DB 설계, 진행 총괄)</td></tr>
+            <tr><td class="task">SF2 클라이언트 개발 (게임 로그인 시 19세 차단 등 웹 연동 부분)</td><td class="do">김용진 팀장</td><td class="dash">—</td><td class="dash">—</td></tr>
+            <tr><td class="task">인프라 · 서버 (웹 서버, 도메인, 배포 환경)</td><td class="do">션 팀장, 에릭 실장</td><td class="dash">—</td><td class="dash">—</td></tr>
+            <tr><td class="task">진행 점검 · 기술 자문</td><td class="do">에릭 실장 (일정표·회의 내용 확인, 리스크 조언)</td><td class="dash">—</td><td class="dash">—</td></tr>
+            <tr><td class="task">검수</td><td class="do">고민제 PM (사업팀 의견 취합 후 한 번에 전달)</td><td class="ok">김충곤 팀장 (검수 완료)</td><td class="sup">테디 팀장 (화면), 오중수 (기능), 지승철 (사이트 QA)</td></tr>
+            <tr><td class="task">오픈</td><td class="do">오중수 (반영)</td><td class="ok">김충곤 팀장</td><td class="sup">고민제 PM</td></tr>
+            <tr><td class="task">오픈 전 콘텐츠 (공지, 확률 게시물, 위키, 게임 소개)</td><td class="do">고민제 PM</td><td class="ok">김충곤 팀장</td><td class="dash">—</td></tr>
+            <tr><td class="task">오픈 공지</td><td class="do">고민제 PM</td><td class="dash">—</td><td class="dash">—</td></tr>
+            <tr><td class="task">일정 관리 (WBS · 일정표) · 주간 보고</td><td class="do">고민제 PM</td><td class="ok">김충곤 팀장</td><td class="sup">각 팀 팀장 (진행 공유, 크로스 체크)</td></tr>
+            <tr><td class="task">일정 변경</td><td class="do">지연이 생긴 팀의 팀장 (보고)</td><td class="ok">김충곤 팀장 (결정)</td><td class="sup">고민제 PM (일정표 반영)</td></tr>
+            <tr><td class="task">부서 간 조율</td><td class="do">고민제 PM</td><td class="ok">김충곤 팀장 (결정)</td><td class="sup">테디 팀장 (웹기획 관련)</td></tr>
+            <tr><td class="task">금요일 회의</td><td class="do">고민제 PM (소집·아젠다·진행)</td><td class="ok">김충곤 팀장 (결정)</td><td class="sup">전원</td></tr>
+            <tr><td class="task">회의 내용 정리 · 공유</td><td class="do">고민제 PM</td><td class="dash">—</td><td class="dash">—</td></tr>
+            <tr><td class="task">가이드 관리</td><td class="do">테디 팀장 (런칭 후 컨플루언스로 정리)</td><td class="dash">—</td><td class="dash">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="flow">
+      <h2><span class="no">03</span>업무 흐름</h2>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><div class="body"><h3>요청 접수</h3><dl class="kv"><dt>주관</dt><dd>고민제 PM (사업팀 의견을 정리해 요청)</dd><dt>산출물</dt><dd>요청 내용 (작업 종류, 기존과 달라지는 점, 목적, 희망 오픈일, 참고 자료)</dd><dt>분기</dt><dd>기존 구조 수정이면 메뉴구조도나 수정 목록만으로 바로 디자인. 신규 기능이 들어가면 웹기획부터</dd><dt>넘어가는 조건</dt><dd>요청이 지라에 등록됨</dd></dl></div></div>
+        <div class="step"><div class="n">2</div><div class="body"><h3>요구사항과 웹기획</h3><dl class="kv"><dt>주관</dt><dd>고민제 PM (요구사항), 테디 팀장 (웹기획)</dd><dt>산출물</dt><dd>웹기획안: 전체 페이지 목록, 화면별 상태, 사용 흐름, 예외 상황, 개인정보 수집 여부, PC/모바일 차이.</dd><dt>지원</dt><dd>김영환 팀장이 구현 가능성 의견</dd><dt>넘어가는 조건</dt><dd>고민제 PM 확인 후 김충곤 팀장이 웹기획안 확정</dd></dl></div></div>
+        <div class="step"><div class="n">3</div><div class="body"><h3>일정 산정과 확정</h3><dl class="kv"><dt>주관</dt><dd>김영환 팀장 (개발), 테디 팀장 (디자인)</dd><dt>산출물</dt><dd>디자인 완료일, 개발 완료일, 검수 기간, 오픈일</dd><dt>넘어가는 조건</dt><dd>김충곤 팀장 확정. 다른 게임 일정과 겹치면 에릭 실장, 인프라에 영향이 있으면 션 팀장에게 공유</dd></dl></div></div>
+        <div class="step"><div class="n">4</div><div class="body"><h3>디자인</h3><dl class="kv"><dt>주관</dt><dd>테디 팀장</dd><dt>산출물</dt><dd>시안, 확정 디자인, 개발 전달용 파일</dd><dt>넘어가는 조건</dt><dd>고민제 PM 확인 후 김충곤 팀장 디자인 확정</dd></dl></div></div>
+        <div class="step"><div class="n">5</div><div class="body"><h3>웹 개발</h3><dl class="kv"><dt>주관</dt><dd>오중수 (개발), 김영환 팀장 (DB 설계, 진행 총괄)</dd><dt>산출물</dt><dd>검수 가능한 테스트 페이지</dd><dt>넘어가는 조건</dt><dd>테스트 환경 반영 완료를 SF2 공통 채널에 공유</dd></dl></div></div>
+        <div class="step"><div class="n">6</div><div class="body"><h3>검수</h3><dl class="kv"><dt>주관</dt><dd>사업팀 내부 검토 (웹기획안 기준, 사이트 QA에 지승철 참여) → 고민제 PM이 의견을 하나로 정리해 테디 팀장에게 전달</dd><dt>지원</dt><dd>테디 팀장 (화면), 오중수 (기능)는 사업팀 검토 전에 자체 확인</dd><dt>넘어가는 조건</dt><dd>김충곤 팀장 검수 완료와 오픈 확정</dd></dl></div></div>
+        <div class="step"><div class="n">7</div><div class="body"><h3>오픈과 운영</h3><dl class="kv"><dt>주관</dt><dd>오중수 (반영), 고민제 PM (공지)</dd><dt>산출물</dt><dd>오픈 공지. 운영 중 수정은 상황별 대응 절차를 따름</dd></dl></div></div>
+      </div>
+    </section>
+
+    <section id="cases">
+      <h2><span class="no">04</span>상황별 대응</h2>
+      <div class="cases">
+        <div class="case">
+          <h3>오픈 일정이 밀릴 것 같을 때</h3>
+          <ol>
+            <li>지연이 생긴 팀의 팀장이 지연 대상, 사유, 새 일정, 결정이 필요한 사항을 정리합니다.</li>
+            <li>SF2 공통 채널에 올리고 고민제 PM과 김충곤 팀장을 태그합니다.</li>
+            <li>김충곤 팀장이 확정하면 일정이 바뀐 것으로 봅니다. 확정 전까지는 기존 일정이 유효합니다.</li>
+            <li>다른 게임 일정에 영향이 있으면 에릭 실장, 인프라에 영향이 있으면 션 팀장에게도 공유합니다.</li>
+            <li>고민제 PM이 변경 내용을 일정표와 다음 금요일 회의 내용에 반영합니다.</li>
+          </ol>
+          <p class="dont">실무자끼리만 합의한 일정 변경은 효력이 없습니다. 반드시 김충곤 팀장 확정을 거칩니다.</p>
+        </div>
+        <div class="case">
+          <h3>수정 요청이 생길 때</h3>
+          <ol>
+            <li>수정 요청은 사업팀 안에서 정리한 뒤 고민제 PM이 한 번에 전달합니다. 실무자에게 개별로 들어온 요청은 고민제 PM을 거치도록 안내합니다.</li>
+            <li>웹기획 단계라면 테디 팀장이 기획안을 고칩니다.</li>
+            <li>디자인 확정 전이라면 테디 팀장이 반영합니다.</li>
+            <li>디자인 확정 후나 개발 중이라면 김영환 팀장이 일정 영향을 판단합니다. 일정이 바뀌면 위의 지연 절차를 따릅니다.</li>
+            <li>검수 의견은 고민제 PM이 수정 목록 하나로 모아 한 번에 전달합니다.</li>
+          </ol>
+          <p class="dont">확정 이후의 범위 추가는 김충곤 팀장 확정 없이 받지 않습니다.</p>
+        </div>
+        <div class="case">
+          <h3>오픈 직전이나 직후 긴급 이슈가 생길 때</h3>
+          <ol>
+            <li>발견한 사람이 SF2 공통 채널에 즉시 올리고 김영환 팀장과 오중수를 태그합니다.</li>
+            <li>김영환 팀장이 원인과 예상 조치 시간을 회신합니다.</li>
+            <li>오픈 연기나 페이지 내림이 필요하면 김충곤 팀장이 결정하고, 고민제 PM이 공지합니다.</li>
+          </ol>
+        </div>
+        <div class="case">
+          <h3>누가 맡을지 애매할 때</h3>
+          <ol>
+            <li>업무별 담당 표를 먼저 확인합니다.</li>
+            <li>그래도 불분명하면 테디 팀장에게 문의합니다. 테디 팀장은 담당자를 안내하고, 필요하면 금요일 회의 안건으로 올립니다.</li>
+            <li>사업팀 쪽 문의는 고민제 PM에게 하고, 해결되지 않으면 김충곤 팀장에게 올립니다.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="meeting">
+      <h2><span class="no">05</span>금요일 회의</h2>
+      <ul class="plain">
+        <li><b>일시</b> 매주 금요일 오전 9시 30분부터 30분간 (10시 종료)</li>
+        <li><b>회의 소집 · 진행</b> 고민제 PM (아젠다 사전 공유). 김충곤 팀장이 함께 참석해 확인</li>
+        <li><b>주간 보고</b> 고민제 PM이 일정 대비 진행 상황과 이슈를 정리해 보고하고, 각 팀 팀장이 확인</li>
+        <li><b>회의 내용 정리</b> 고민제 PM이 정리해 공유하고 일정표에 반영. 테디 팀장은 바뀐 역할·절차를 가이드에 반영</li>
+        <li><b>결정</b> 김충곤 팀장 (부재 시 고민제 PM)</li>
+        <li><b>공유</b> 회의록은 에릭 실장에게도 공유해 진행 상황을 볼 수 있게 함</li>
+        <li><b>참석</b> 에릭 실장, 김충곤 팀장, 김영환 팀장, 김용진 팀장, 션 팀장, 테디 팀장, 고민제 PM, 지승철, 오중수</li>
+        <li><b>10/30 (금)</b> 김충곤 팀장 연차. 회의는 고민제 PM이 그대로 진행 (필요하면 10/29로 이동 검토)</li>
+      </ul>
+      <h3>고정 안건</h3>
+      <div class="table-box">
+        <table>
+          <thead><tr><th>안건</th><th>발표</th><th>남길 것</th></tr></thead>
+          <tbody>
+            <tr><td>팀별 진행 상황과 일정 변경 여부</td><td>각 팀 팀장</td><td>진행 상태, 변경 시 사유·새 일정·확정 여부</td></tr>
+            <tr><td>주간 보고 (일정 대비 진행, 이슈)</td><td>고민제 PM</td><td>지연 항목과 대응</td></tr>
+            <tr><td>이번 주 수정 요청</td><td>고민제 PM</td><td>요청 목록과 처리 담당</td></tr>
+            <tr><td>검수 현황</td><td>고민제 PM</td><td>남은 이슈 수와 담당</td></tr>
+            <tr><td>결정 사항</td><td>김충곤 팀장 (기록 고민제 PM)</td><td>무엇을, 누가 결정했는지</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="todo">
+      <h2><span class="no">06</span>확인 필요 항목</h2>
+      <ul class="plain todo">
+                <li><span class="chip">확인 필요</span> 고민제 PM 부재 시 회의 내용 정리 대리</li>
+        <li><span class="chip">확인 필요</span> 다른 게임과 개발 일정이 겹칠 때 우선순위를 최종 결정하는 사람</li>
+        <li><span class="chip">확인 필요</span> 휴대폰 번호 등 개인정보를 수집하는 페이지의 사내 검토 담당 (개인정보·법무)</li>
+        <li><span class="chip">확인 필요</span> 약관 담당자와 완료 일정 (논의 안건 5, 김충곤 팀장 확인 중)</li>
+        <li><span class="chip ok">검토 요청</span> 10/12 김충곤 팀장, 10/13 김영환·김충곤 팀장과 검토. 금요일 회의에서 공유</li>
+      </ul>
+    </section>
+
+    </div>
+
+    <div id="panel-schedule" class="panel" hidden>
+      <section id="schedule">
+        <h2>스포2 한국 런칭 일정표</h2>
+        <h3>마일스톤 · 팀별 일정</h3>
+        <div class="g-legend">
+          <span><i class="g-key done"></i>완료</span><span><i class="g-key now"></i>진행 중</span><span><i class="g-key plan"></i>예정</span><span><i class="g-key warn"></i>위험</span><span><i class="g-key plan est"></i>예상 일정</span><span><i class="g-key-ms"></i>마일스톤</span>
+        </div>
+        <div class="g-box">
+          <table class="gantt" style="--grid-off:32px;--wk:56px">
+            <thead><tr><th class="g-name">업무</th><th class="g-note">일정</th><th class="g-head"><div class="g-lane g-hlane" style="width:584px"><span class="g-m" style="left:0px">10월</span><span class="g-m" style="left:248px">11월</span><span class="g-m" style="left:488px">12월</span><span class="g-w" style="left:32px">10/5</span><span class="g-w" style="left:88px">10/12</span><span class="g-w" style="left:144px">10/19</span><span class="g-w" style="left:200px">10/26</span><span class="g-w" style="left:256px">11/2</span><span class="g-w" style="left:312px">11/9</span><span class="g-w" style="left:368px">11/16</span><span class="g-w" style="left:424px">11/23</span><span class="g-w" style="left:480px">11/30</span><span class="g-w" style="left:536px">12/7</span><span class="g-todaytag" style="left:124px">오늘 10/12</span></div></th></tr></thead>
+            <tbody>
+              <tr class="g-group g-msrow"><td class="g-name" colspan="2"><b>마일스톤</b></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-ms" style="left:12px;top:6px" title="10/2 킥오프"></span><span class="g-mslabel" style="left:22px;top:4px">10/2 킥오프</span><span class="g-ms" style="left:348px;top:6px" title="11/13 심사용 홈페이지"></span><span class="g-mslabel" style="left:338px;top:4px;transform:translateX(-100%)">11/13 심사용 홈페이지</span><span class="g-ms" style="left:380px;top:26px" title="11/17 사전예약 시작"></span><span class="g-mslabel" style="left:390px;top:24px">11/17 사전예약 시작</span><span class="g-ms" style="left:548px;top:6px" title="12/8 웹사이트 오픈"></span><span class="g-mslabel" style="left:538px;top:4px;transform:translateX(-100%)">12/8 오픈</span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr class="g-group"><td class="g-name" colspan="2"><b>웹기획 · 디자인</b><span>테디 팀장</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">홈페이지 디자인 · 검수</td><td class="g-note"><span class="g-st done">완료</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar done" style="left:8px;width:56px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">사전예약 웹기획 재검토</td><td class="g-note"><span class="g-st done">완료</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar done" style="left:56px;width:48px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">사전예약 디자인</td><td class="g-note"><span class="g-st done">10/15 개발팀 전달 완료</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar done" style="left:64px;width:56px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">개발 중 디자인 대응 · QA 화면 확인</td><td class="g-note"><span class="g-st now">수정 마감까지</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar now est" style="left:120px;width:424px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr class="g-group"><td class="g-name" colspan="2"><b>웹 개발</b><span>김영환 팀장 · 오중수</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">개발 총괄 · DB 설계 · 김영환 팀장</td><td class="g-note"><span class="g-st now">전체 개발 진행 총괄</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar now est" style="left:88px;width:456px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">심사용 홈페이지 · 오중수</td><td class="g-note"><span class="g-st now">PG·연령제한 심사용, 구조·구성 확인 수준</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar now est" style="left:88px;width:264px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">실서비스 기능 · QA · 오중수</td><td class="g-note"><span class="g-st warn">12/10 목표 (오픈 12/8보다 늦음)</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar warn est" style="left:344px;width:224px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">사전예약 개발 · 오중수</td><td class="g-note"><span class="g-st now">홈페이지와 동시 진행</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar now est" style="left:112px;width:240px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">19세 미만 접근 제한 · 인증 구조 재검토</td><td class="g-note"><span class="g-st tbd">IT DEV·플랫폼·사업, 다음 회의 공유</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">한국 플랫폼 연동 · SF2 연결 · 오중수</td><td class="g-note"><span class="g-st tbd">기한 미정</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr class="g-group"><td class="g-name" colspan="2"><b>사업</b><span>김충곤 팀장 · 고민제 PM</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">사전예약 보상 아이템명·이미지 전달</td><td class="g-note"><span class="g-st done">완료</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar done" style="left:96px;width:24px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">PG 2차 미팅</td><td class="g-note"><span class="g-st plan">10/23 전후, 김충곤·김영환 팀장</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar plan est" style="left:176px;width:8px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">19세 등급 신청 · 결과 대기</td><td class="g-note"><span class="g-st warn">10/28 신청, 11/18~20 결과 예상</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar warn est" style="left:216px;width:192px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">카드사 심사</td><td class="g-note"><span class="g-st warn">2주~최대 3주, 이후 약 1주 테스트</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar warn est" style="left:344px;width:176px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">사전예약 운영</td><td class="g-note"><span class="g-st plan">11/17 시작</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar plan" style="left:376px;width:168px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr class="g-group"><td class="g-name" colspan="2"><b>인프라</b><span>에릭 실장 · 션 팀장</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">라이브 서버 세팅 · 전달</td><td class="g-note"><span class="g-st now">빠르면 10월 말, 늦어도 11/6</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar now est" style="left:144px;width:152px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr class="g-group"><td class="g-name" colspan="2"><b>수정 마감 · QA (제안)</b><span>김충곤 팀장 확정 필요</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">사전예약 수정 마감</td><td class="g-note"><span class="g-st plan">11/6 이후 수정 받지 않음</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar plan est" style="left:288px;width:8px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">사전예약 QA · 콘텐츠 반영</td><td class="g-note"><span class="g-st plan">사전예약 시작 전 1주</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar plan est" style="left:312px;width:40px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">심사용 홈페이지 QA · 수정</td><td class="g-note"><span class="g-st plan">11/9 개발 완료 전제</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar plan est" style="left:320px;width:24px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">홈페이지 1차 QA</td><td class="g-note"><span class="g-st plan">완성된 화면부터 점검, 지승철 참여</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar plan est" style="left:368px;width:96px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">홈페이지 수정 · 콘텐츠 입력 마감</td><td class="g-note"><span class="g-st plan">11/27 이후 수정 받지 않음</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar plan est" style="left:456px;width:8px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">홈페이지 2차 QA</td><td class="g-note"><span class="g-st plan">수정 반영 확인</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar plan est" style="left:480px;width:40px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+              <tr><td class="g-name g-task">최종 확인</td><td class="g-note"><span class="g-st plan">오픈 전날</span></td><td class="g-track"><div class="g-lane" style="width:584px"><span class="g-bar plan est" style="left:536px;width:8px"></span><span class="g-today" style="left:124px"></span></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>팀별 현황 <span class="asof">10/16 기준</span></h3>
+        <div class="teams">
+          <div class="team"><div class="th"><b>웹기획 · 디자인</b><span>테디 팀장</span></div>
+            <dl><dt class="done">완료</dt><dd>홈페이지 디자인 전달·검수 (10/8), 사전예약 웹기획·디자인 개발팀 전달 (10/15, 보상 아이템·이미지 반영)</dd>
+            <dt class="now">진행 중</dt><dd>개발 중 디자인 문의·수정 대응</dd>
+            <dt class="wait">결정 대기</dt><dd>"19세 이상" 체크 문구 유지·수정·삭제 (법무 검토), 개인정보 관리책임자 명의 (회사 정책 확인)</dd>
+            <dt class="next">다음</dt><dd>심사용 홈페이지 QA, 사전예약 QA, 런처 이미지 (사양 확인 후)</dd></dl></div>
+          <div class="team"><div class="th"><b>웹 개발</b><span>김영환 팀장 · 오중수</span></div>
+            <dl><dt class="now">진행 중</dt><dd>심사용 홈페이지 (11/13, 구조·구성 확인 수준, 일정상 문제없음 보고)와 사전예약 개발 동시 진행 (오중수). DB 설계 (김영환 팀장)</dd>
+            <dt class="wait">결정 대기</dt><dd>19세 미만 접근 제한·인증 구조 재검토 (Papaya 플랫폼 구조상 SF2 전용 토큰 방식 불가)</dd>
+            <dt class="next">다음</dt><dd>11/13 이후 실서비스 기능·QA (12/10 목표), 업그레이드된 심의 서버의 QA 서버 사용 가능 여부 확인, QA용 CDN에 테스트 서버 임시 웹·도메인 적용</dd></dl></div>
+          <div class="team"><div class="th"><b>사업</b><span>김충곤 팀장 · 고민제 PM</span></div>
+            <dl><dt class="done">완료</dt><dd>사전예약 보상 아이템명·이미지 전달, 사전예약 푸터 공통 약관 링크 (10/15)</dd>
+            <dt class="now">진행 중</dt><dd>등급분류 접수 준비, 약관 확인 (김충곤 팀장), 등급 미발급 시 처리 법무법인 확인</dd>
+            <dt class="wait">결정 대기</dt><dd>SMS 발송 횟수 (통신사 회신 10/16)</dd>
+            <dt class="next">다음</dt><dd>PG 2차 미팅 10/23 전후, 등급분류 접수 10/28, 카드사 심사 신청 11/13, 사전예약 시작 11/17</dd></dl></div>
+          <div class="team"><div class="th"><b>인프라 · 클라이언트</b><span>에릭 실장 · 션 팀장 · 김용진 팀장</span></div>
+            <dl><dt class="now">진행 중</dt><dd>한국 라이브 서버 IDC 업그레이드 (10/16), 시즌2 빌드 약 80%</dd>
+            <dt class="next">다음</dt><dd>라이브 서버 세팅·전달 (빠르면 10월 말, 늦어도 11/6), 한국 전용 CDN 지정, 11월 패치 후 시즌2 최종 빌드 확정</dd></dl></div>
+        </div>
+        <div class="risk">
+          <strong>가장 큰 일정 위험: 19세 미만 접근 제한 · 인증 구조</strong>
+          <p>로그인 시 API 토큰을 발행하는 방식은 Papaya 플랫폼 구조상 SF2만을 위해 바꿀 수 없어, 웹·런처·클라이언트 인증 구조 전체를 공통 플랫폼 기준으로 다시 봅니다. 방향이 정해져야 웹 가입 시 19세 처리, 게임 시작 버튼, 클라이언트 차단 개발 범위가 정해집니다. 12/8은 글로벌 시즌2와 원빌드라 클라이언트 쪽 변경 여유도 적습니다. 다음 회의에서 방향이 나오지 않으면 오픈 일정에 영향이 생깁니다.</p>
+        </div>
+        <h3>세부 일정</h3>
+        <div class="table-box">
+          <table class="sched">
+            <thead><tr><th>날짜</th><th>내용</th><th>담당</th><th>상태</th></tr></thead>
+            <tbody>
+              <tr><td class="d">10/8</td><td>웹사이트 디자인 1차 전달·검수</td><td>디자인</td><td><span class="st done">완료</span></td></tr>
+              <tr><td class="d">10/8~13</td><td>사전예약 웹기획 재검토 (지승철 정리안 기준)</td><td>웹기획</td><td><span class="st done">완료</span></td></tr>
+              <tr><td class="d">10/8</td><td>사전예약 방식: 휴대폰 번호 수집으로 확정</td><td>사업팀</td><td><span class="st done">완료</span></td></tr>
+              <tr><td class="d">10/13</td><td>사전예약 디자인 확정. 보상 상세 보기 팝업, 19세 이상 체크박스 추가</td><td>디자인</td><td><span class="st done">완료</span></td></tr>
+              <tr><td class="d">10/15</td><td>사전예약 보상 아이템명·이미지 전달, 사전예약 웹기획·디자인 개발팀 전달</td><td>사업팀 · 디자인</td><td><span class="st done">완료</span></td></tr>
+              <tr><td class="d">10/15</td><td>사전예약 푸터에 파파야플레이 공통 이용약관·개인정보처리방침 링크</td><td>디자인</td><td><span class="st done">완료</span></td></tr>
+              <tr><td class="d">10/16</td><td>첫 정기 회의</td><td>전원</td><td><span class="st done">완료</span></td></tr>
+              <tr><td class="d">10/16</td><td>한국 라이브 서버 IDC 업그레이드</td><td>인프라</td><td><span class="st done">진행</span></td></tr>
+              <tr><td class="d">10/16</td><td>SMS 통신사 회신 확인 (불가 시 SMS 제외)</td><td>사업팀</td><td><span class="st warn">확인 중</span></td></tr>
+              <tr><td class="d">10/12~11/13</td><td>심사용 홈페이지 (PG·연령제한 심사용, 구조·구성 확인 수준)와 사전예약 개발 동시 진행</td><td>웹 개발</td><td><span class="st plan">진행 중</span></td></tr>
+              <tr><td class="d">10/23 전후</td><td>PG 2차 미팅, 협의 마무리 (김충곤·김영환 팀장)</td><td>사업팀 · 웹 개발</td><td><span class="st plan">예정</span></td></tr>
+              <tr><td class="d">10/23</td><td>19세 미만 접근 제한·인증 구조 재검토 결과 공유 (다음 회의)</td><td>IT DEV · 플랫폼 · 사업</td><td><span class="st warn">재검토</span></td></tr>
+              <tr><td class="d">10/28</td><td>등급분류 접수 (늦어도 10월 말)</td><td>사업팀</td><td><span class="st plan">예정</span></td></tr>
+              <tr><td class="d">10/30</td><td>정기 회의. 김충곤 팀장 연차 (취소 또는 10/29 변경 검토)</td><td>전원</td><td><span class="st open">미정</span></td></tr>
+              <tr><td class="d">10월 말~11/6</td><td>라이브 서버 세팅·전달</td><td>인프라</td><td><span class="st plan">예정</span></td></tr>
+              <tr><td class="d">11/6</td><td>사전예약 수정 마감 (제안)</td><td>전원</td><td><span class="st open">제안</span></td></tr>
+              <tr><td class="d">11/9~13</td><td>사전예약 QA, 콘텐츠 반영 (제안)</td><td>사업팀 · 웹 개발</td><td><span class="st open">제안</span></td></tr>
+              <tr><td class="d">11/10~12</td><td>심사용 홈페이지 QA·수정 (제안, 11/9 개발 완료 전제)</td><td>사업팀 · 웹 개발</td><td><span class="st open">제안</span></td></tr>
+              <tr><td class="d">11/13</td><td>심사용 홈페이지 완성, 카드사 심사 신청 (최후 기한 11/16)</td><td>웹 개발 · 사업팀</td><td><span class="st warn">중요</span></td></tr>
+              <tr><td class="d">11/17</td><td>사전예약 시작, 정식 오픈 전까지 운영</td><td>사업팀</td><td><span class="st plan">예정</span></td></tr>
+              <tr><td class="d">11/18~20</td><td>등급 결과 예상. 발급 후 사전예약·홈페이지에 등급 표기 추가</td><td>사업팀 · 웹 개발</td><td><span class="st warn">결과 대기</span></td></tr>
+              <tr><td class="d">11/16~27</td><td>홈페이지 1차 QA: 완성된 화면부터 점검, 지승철 참여 (제안)</td><td>사업팀 · 웹 개발</td><td><span class="st open">제안</span></td></tr>
+              <tr><td class="d">11/27~12/4</td><td>카드사 심사 결과 (2주~최대 3주), 이후 약 1주 테스트</td><td>사업팀</td><td><span class="st plan">예정</span></td></tr>
+              <tr><td class="d">11/27</td><td>홈페이지 수정 · 오픈 전 콘텐츠 입력 마감 (제안)</td><td>전원</td><td><span class="st open">제안</span></td></tr>
+              <tr><td class="d">11/30~12/4</td><td>홈페이지 2차 QA: 수정 반영 확인 (제안)</td><td>사업팀 · 웹 개발</td><td><span class="st open">제안</span></td></tr>
+              <tr><td class="d">12/7</td><td>오픈 전 최종 확인 (제안)</td><td>전원</td><td><span class="st open">제안</span></td></tr>
+              <tr><td class="d">12/8</td><td>한국 런칭 + 글로벌 시즌2 업데이트 (원빌드)</td><td>전원</td><td><span class="st warn">목표</span></td></tr>
+              <tr><td class="d">12/10</td><td>실서비스 기능·QA 완료 목표 (웹 개발 보고, 오픈일 이후)</td><td>웹 개발</td><td><span class="st warn">확인 필요</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul class="plain note">
+          <li>이 일정표는 웹 업무만 다룹니다. 클라이언트와 인프라 일정은 포함하지 않습니다.</li>
+          <li>"제안" 표시 일정은 아직 확정 전입니다 (논의 안건 8).</li>
+        </ul>
+      </section>
+    </div>
+
+    <div id="panel-minutes" class="panel" hidden>
+      <section id="open-items">
+        <h2>미결 사항</h2>
+        <div class="table-box">
+          <table class="open-table">
+            <colgroup><col style="width:56%"><col style="width:20%"><col style="width:24%"></colgroup>
+            <thead><tr><th>안건</th><th>결정할 사람</th><th>막혀 있는 일</th></tr></thead>
+            <tbody>
+              <tr><td class="who">19세 미만 접근 제한·인증 구조. Papaya 플랫폼 구조상 SF2 전용 토큰 방식 불가. 웹·런처·클라이언트 인증을 공통 플랫폼 기준으로 재검토 (보안, 유지보수, 국가별 인증 정책 포함)</td><td>IT DEV · 플랫폼 · 사업 → 김충곤 팀장</td><td>웹 가입 19세 처리, 게임 시작 버튼, 클라이언트 차단 개발</td></tr>
+              <tr><td class="who">웹 실서비스 기능·QA 완료 목표 12/10. 오픈 12/8보다 늦음. 12/8 오픈 때 반드시 동작해야 하는 범위와 이후 반영 범위 구분 필요</td><td>김영환 팀장 → 김충곤 팀장</td><td>홈페이지 QA·오픈 일정</td></tr>
+              <tr><td class="who">사전예약 페이지 하단 등급 표시. 10/28 접수, 결과 11/18~20 예상으로 사전예약 시작(11/17) 때는 미발급. 발급 전에는 표기 불가. 등급 발급 전 사전예약 오픈 가능 여부, 푸터를 비워두고 발급 후 추가해도 되는지 법무법인 확인 중</td><td>고민제 PM → 김충곤 팀장 (법무법인 확인)</td><td>사전예약 시작, 심사용 홈페이지 푸터</td></tr>
+              <tr><td class="who">사전예약 "19세 이상" 체크 문구 유지·수정·삭제</td><td>사업 · 법무 → 웹</td><td>사전예약 디자인·개발</td></tr>
+              <tr><td class="who">개인정보 관리책임자. 현재 이진우 실장 명의로 기재. 회사 정책 확인 후 확정</td><td>사업 · 내부 정책 담당</td><td>사전예약 페이지 확정</td></tr>
+              <tr><td class="who">사전예약 SMS 발송 횟수 (2회 방향, 불가 시 SMS 제외). 10/16 통신사 회신 확인</td><td>사업팀</td><td>사전예약 개발</td></tr>
+              <tr><td class="who">심사용 홈페이지 QA 기간 (개발 완료일, QA 시작일, 마감일). 11/13 완성 전에 QA 필요</td><td>김충곤 팀장 (논의 안건 8)</td><td>심사용 홈페이지, 카드사 심사 신청</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="actions">
+        <h2>액션 아이템</h2>
+        <div class="table-box">
+          <table>
+            <thead><tr><th>담당</th><th>내용</th><th>기한</th></tr></thead>
+            <tbody>
+              <tr><td class="who">IT DEV · 플랫폼 · 사업</td><td>19세 미만 접근 제한·인증 구조 재검토 (공통 플랫폼, 보안, 국가별 정책)</td><td class="d">다음 회의</td></tr>
+              <tr><td class="who">플랫폼 담당</td><td>웹→런처 토큰 전달 API와 인증 흐름 확인</td><td class="d">재검토 후</td></tr>
+              <tr><td class="who">사업 · 법무 · 웹</td><td>사전예약 "19세 이상" 문구 법무 검토 결과 공유·반영</td><td class="d">법무 회신 후</td></tr>
+              <tr><td class="who">사업 · 내부 정책 담당</td><td>개인정보 관리책임자 지정 기준 확인, 최종 명의 확정</td><td class="d">사전예약 확정 전</td></tr>
+              <tr><td class="who">사업팀</td><td>SMS 통신사 회신 확인, 후속 조치 (불가 시 SMS 제외)</td><td class="d">10/16</td></tr>
+              <tr><td class="who">김충곤 · 김영환 팀장</td><td>PG 2차 미팅, 협의 마무리</td><td class="d">10/23 전후</td></tr>
+              <tr><td class="who">사업 (김충곤 팀장)</td><td>등급분류 접수</td><td class="d">10/28</td></tr>
+              <tr><td class="who">사업팀</td><td>등급 발급 전 사전예약 오픈 가능 여부, 푸터 처리 법무법인 회신 공유</td><td class="d">—</td></tr>
+              <tr><td class="who">김충곤 팀장</td><td>약관 관련 사항 확인</td><td class="d">—</td></tr>
+              <tr><td class="who">웹 개발 (오중수)</td><td>심사용 테스트 페이지 완성 (홈, 결제, 공통 로그인·마이페이지 연결, 나머지 준비중)</td><td class="d">11/13</td></tr>
+              <tr><td class="who">웹 개발</td><td>업그레이드된 심의 서버(16GB)를 QA 서버로 쓸 수 있는지 확인</td><td class="d">업그레이드 후</td></tr>
+              <tr><td class="who">웹 개발</td><td>QA용 CDN에 테스트 서버 임시 웹·도메인 적용</td><td class="d">—</td></tr>
+              <tr><td class="who">웹 개발</td><td>저장소 관련 이메일·지라 티켓 확인</td><td class="d">—</td></tr>
+              <tr><td class="who">웹 개발</td><td>분석·어드민 자동 연동 적용 여부 확인</td><td class="d">—</td></tr>
+              <tr><td class="who">웹 개발 (오중수)</td><td>한국 API 문서 확보 (Swagger 확인), SF2 서비스 키 발급, 로그인 테스트</td><td class="d">—</td></tr>
+              <tr><td class="who">인프라 (SRE)</td><td>IDC 업그레이드 후 라이브 서버 세팅·전달</td><td class="d">10월 말~11/6</td></tr>
+              <tr><td class="who">인프라 (SRE)</td><td>한국 전용 CDN 지정</td><td class="d">—</td></tr>
+              <tr><td class="who">QA · 개발 · 인프라</td><td>QA 서버 추가 증설 필요 여부, 요구 스펙 확정</td><td class="d">초기 QA 세팅 후</td></tr>
+              <tr><td class="who">개발팀</td><td>안티치트 연동 불안정 구간 테스트·조치</td><td class="d">—</td></tr>
+              <tr><td class="who">개발 · 사업</td><td>시즌2 상품·이벤트 점검, 최종 빌드 확정</td><td class="d">11월 패치 전후</td></tr>
+              <tr><td class="who">사업팀</td><td>라이브 서버 세팅 후 구성·일정 점검, 공유</td><td class="d">서버 전달 후</td></tr>
+              <tr><td class="who">사업팀</td><td>심사기관 고정 IP 문의 후 공유</td><td class="d">—</td></tr>
+              <tr><td class="who">고민제 PM</td><td>정기 회의 소집, 아젠다 사전 공유, 회의록 정리·공유</td><td class="d">매주</td></tr>
+              <tr><td class="who">고민제 PM</td><td>오픈 전 콘텐츠 준비 (공지, 확률 게시물, 위키, 게임 소개)</td><td class="d">11/27 (제안)</td></tr>
+              <tr><td class="who">테디 팀장</td><td>런처 이미지 사양 확인 후 제작</td><td class="d">—</td></tr>
+              <tr><td class="who">테디 팀장</td><td>런칭 후 가이드와 절차를 컨플루언스에 정리</td><td class="d">런칭 후</td></tr>
+              <tr><td class="who">고민제 PM</td><td>사전예약 보상 아이템명·이미지 전달 <span class="st done">완료</span></td><td class="d">10/15</td></tr>
+              <tr><td class="who">고민제 PM</td><td>사전예약 약관·개인정보 처리방침 링크 필요 여부 확인 <span class="st done">완료</span></td><td class="d">10/15</td></tr>
+              <tr><td class="who">디자인 (테디 팀장)</td><td>사전예약 웹기획·디자인 개발팀 전달 <span class="st done">완료</span></td><td class="d">10/15</td></tr>
+              <tr><td class="who">고민제 PM</td><td>WBS·주간 업무 공유 시작 (컨플루언스) <span class="st done">완료</span></td><td class="d">10/16</td></tr>
+              <tr><td class="who">테디 팀장</td><td>가이드 공유 <span class="st done">완료</span></td><td class="d">10/16</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="minutes">
+        <h2>회의록</h2>
+        <div class="case">
+          <h3>회의 밖 결정 · 논의</h3>
+          <ul class="plain">
+            <li><b>10/9</b> 사전예약은 휴대폰 번호 수집 방식으로 결정</li>
+            <li><b>10/12</b> 사전예약 문자 인증 확정. SMS 발송은 2회 방향, 통신사 회신 후 안 되면 제외</li>
+            <li><b>10/12</b> 성인 인증: 15세 등급을 받더라도 19세 이용 불가로 서비스. 웹 가입 시 나이 확인 후 DB에 19세 인증 여부 저장, 게임 로그인 시 클라이언트에서 확인해 차단. 클라이언트 쪽은 추가 개발 필요. 웹은 게임 시작·설치 시 19세 안내 팝업만 표시 (10/16 변경: Papaya 플랫폼 구조상 SF2 전용 방식 불가, 인증 구조 전체 재검토)</li>
+            <li><b>10/12</b> 결제: 빌링사 페이레터에서 게임별 결제 비율을 따로 설정할 수 있어 스포2는 별도 비율로 정리. 별도 환전 구조 불필요</li>
+            <li><b>10/12</b> 카드사 심사: 대부분 2주, 최대 3주. 통과하지 못한 카드사는 빼고 런칭. 홈페이지는 11/16까지 확인 가능하게 (김영환 팀장 합의) (10/15 변경: 11/13 완성 목표, 최후 기한 11/16)</li>
+            <li><b>10/12</b> 등급 신청, PG 내용 정리 완료. 확률 고지 등은 법적 강제가 아닌 권고 사항이나 런칭 전 반영</li>
+            <li><b>10/12</b> 지승철은 사전예약 마무리 후 빠지고, 사이트 QA 단계에 다시 참여</li>
+            <li><b>10/13</b> 사전예약 디자인 확정 (고민제 PM 확인). 보상 상세 보기 팝업 추가, 신청 영역에 "19세 이상입니다" 체크박스 추가 (실제 나이 확인은 아니지만 이후 제재 근거)</li>
+            <li><b>10/13</b> 문자 인증은 KT 비즈메카 API 연동으로 번호 인증만. 나이·이름 확인은 비용 차이가 커서 하지 않음</li>
+            <li><b>10/13</b> 웹 관련 소통 창구는 고민제 PM. 웹 작업·수정 요청, 디자인·웹 문의, 회의 소집, 검수 의견 취합, 일정 관리를 고민제 PM이 맡고, 김충곤 팀장은 한동안 회의에 함께 참석해 확인. 고민제 PM을 통해 해결되지 않는 건은 김충곤 팀장에게</li>
+            <li><b>10/13</b> 일정 관리: 고민제 PM이 WBS·일정표를 관리하고 주간 보고. 이 페이지 양식을 참고해 표준 양식을 정하고, 각 팀 팀장이 진행 상황을 공유하고 크로스 체크</li>
+            <li><b>10/13</b> 이번 프로젝트의 절차는 런칭 후 컨플루언스에 정리해 다음 프로젝트에 활용</li>
+            <li><b>10/13</b> 카드사 심사용 홈페이지 범위 (10/15 변경: 11/13 목표): 홈 화면, 결제(충전) 페이지, 로그인·마이페이지(파파야플레이 공통 페이지 연결). 나머지 메뉴는 "준비중"으로 막아둠</li>
+            <li><b>10/15</b> 일정 공유 (김충곤 팀장 메일): 12/8 한국 런칭과 글로벌 시즌2 원빌드 동시 적용, 심사용 홈페이지 11/13 완성 목표 (최후 11/16), 사전예약 11/17 시작</li>
+            <li><b>10/15</b> SF2 공통 채널 신설 완료. 일정 변경, 긴급 이슈, 결정 사항, 회의 내용은 이 채널로 공유</li>
+            <li><b>10/15</b> 사전예약 페이지 푸터에 기존 파파야플레이 공통 이용약관·개인정보처리방침 링크 추가. 스포2 전용 약관 페이지는 만들지 않음</li>
+            <li><b>10/15</b> 약관 관련 사항은 김충곤 팀장이 확인 중</li>
+            <li><b>10/15</b> 등급: 10/28 19세 등급 신청, 결과는 11/18~20 예상. 사전예약 시작 때 미발급일 수 있음. 발급 전에는 페이지에 등급 표기 불가. 미발급이면 푸터 등급을 비워두고 발급 후 추가하는 방식이 괜찮은지 법무법인 확인 중</li>
+          </ul>
+        </div>
+        <details class="mtg" open>
+          <summary><span class="mdate">10/16 (금)</span><span class="mtitle">1차 정기 회의 · 팀별 진행 현황 점검</span></summary>
+          <div class="mbody">
+            <p class="ctx">SF2 한국 런칭(12/8)과 글로벌 시즌2 팀별 진행 현황 점검. 참석: 사업, 웹기획·디자인, IT DEV(웹 개발), 인프라(SRE), 플랫폼. 이번 주부터 팀별 진행 사항은 컨플루언스 주간 업무 공유 페이지로 관리합니다.</p>
+
+            <h3>결정</h3>
+            <ul class="plain">
+              <li><b>심사용 홈페이지</b> 11/13까지 PG사·연령제한 심사용 테스트 페이지 먼저 제작. 기본 구조와 구성을 확인할 수 있는 수준이면 충분. IT DEV는 일정상 문제없다고 보고</li>
+              <li><b>카드사 심사</b> 통상 2주, 최대 3주. 11/13까지 접근 가능한 심사용 페이지만 있으면 신청 가능하고, 심사 후 약 1주 테스트 기간 확보. 현재 일정으로 12/8 런칭 가능 판단</li>
+              <li><b>결제 화면</b> 1차 오픈은 기존 레이아웃에서 SF2만 선택하는 형태. 신규 게임이 늘면 글로벌처럼 포털에서 게임을 고르는 통합 결제 구조 검토. EOS·대항해시대는 현행 유지</li>
+              <li><b>분석·어드민</b> 공통 서비스에 게임을 추가하면 데이터 수집·어드민 연동이 자동 적용. 별도 선행 개발 없이 적용 여부만 확인</li>
+              <li><b>스팀</b> 스팀 접속은 글로벌로만 분류. 한국 이용자는 국내 포털로 가입·접속</li>
+              <li><b>QA 환경</b> QA용 CDN은 테스트 서버에 임시로 띄운 웹·도메인 사용. 한국 전용 CDN은 별도로 필요</li>
+              <li><b>등급분류</b> 늦어도 10월 말 (일정표상 10/28) 접수</li>
+              <li><b>PG 2차 미팅</b> 10/23(금) 전후 진행해 협의 마무리</li>
+              <li><b>회의록</b> 다음 회의부터 고민제 PM이 정리해 전달</li>
+            </ul>
+
+            <h3>주요 논의</h3>
+            <ul class="plain">
+              <li><b>19세 미만 접근 제한</b> 로그인 시 API 토큰을 발행하는 방식은 Papaya 플랫폼 구조를 SF2만을 위해 바꿀 수 없어 불가. 기존안(웹 게임 시작 → 런처 실행, 인증·차단은 클라이언트)은 공통 플랫폼 구조, 보안, 유지보수, 국가별 인증 정책상 예외 구조가 될 수 있다는 우려. 게임을 공통 플랫폼 인증 체계에 맞추는 방향을 포함해 재검토. 클라이언트는 웹에서 확인한 미성년자 정보를 연계해 인게임 접속을 막는 방향으로 개발 중</li>
+              <li><b>웹 개발 일정</b> 11/13 이후 실서비스용 추가 기능 구현과 QA를 진행해 12/10까지 맞추는 것이 목표 (오픈 12/8보다 늦어 확인 필요)</li>
+              <li><b>웹기획·디자인</b> 기반 웹페이지 디자인과 사전예약 페이지 제작 완료, QA 검수 단계. 사전예약은 개발 중. 개인정보 관리책임자는 현재 이진우 실장 명의로 기재, 회사 정책 확인 후 확정. 미성년자 문구는 "19세 이상" 확인 체크를 넣었고 법무 검토 결과에 따라 유지·수정·삭제</li>
+              <li><b>인프라</b> 10/16 한국 라이브 서버 IDC(블레이드) 업그레이드. 다음 주부터 서버 세팅, 빠르면 10월 내 전달. 라이브 서버 스펙이 빠듯해 QA 서버를 여러 대 두기 어려움. 심의용 QA 서버는 메모리 8GB→16GB로 업그레이드, QA 서버로 쓸 수 있는지 확인 요청</li>
+              <li><b>클라이언트</b> 시즌2 빌드 약 80%. 11월 추가 패치에서 상품·이벤트 점검 후 최종 빌드 확정</li>
+              <li><b>사업</b> 안티치트 연동이 불안정해 추가 테스트 필요. 라이브 서버 세팅 후 구성과 일정 점검해 계속 공유</li>
+            </ul>
+          </div>
+        </details>
+        <details class="mtg">
+          <summary><span class="mdate">10/2 (금)</span><span class="mtitle">킥오프 · 한국 런칭 서버 인프라 구성과 일정</span></summary>
+          <div class="mbody">
+            <p class="ctx">원래 글로벌 서버에서 한국 리전으로 연결할 계획이었으나, 법무 검토 후 대표님 판단으로 한국 단독 런칭으로 바뀌었습니다. 전체 일정은 기존 공유안을 유지합니다.</p>
+
+            <h3>결정</h3>
+            <ul class="plain">
+              <li><b>게임 서버</b> 오픈 시 2대. 예상 동접 800명이지만 방 단위 자원 할당으로 서버당 약 90개 방만 생성 가능해 2대가 필요. 오픈 2~3개월 후 동접 1,000명 아래면 1대 감축 검토</li>
+              <li><b>DB 서버</b> 글로벌과 같이 3대 (게임, 로그, 통합). 통합은 운영 안정 후 검토. 인프라 측은 한번 분리하면 나중에 합치기 더 어렵다는 의견</li>
+              <li><b>기타 서버</b> 매니지먼트, 메신저, 인포메이션 서버는 글로벌과 같은 세트, 스펙은 낮춤</li>
+              <li><b>게임 시작 버튼</b> 런처 미설치 시 다운로드, 설치 시 런처 실행. 해외와 동일</li>
+              <li><b>웹 19세 체크</b> 게임 시작 시 무조건 구현. API에 클라이언트용 연령 플래그도 함께 준비 (10/12 변경: 차단은 클라이언트, 웹은 안내 팝업) (10/16 변경: 인증 구조 재검토)</li>
+              <li><b>사전예약 도메인</b> 별도 사이트 없이 sf2.papayaplay.co.kr/register 하위 경로</li>
+              <li><b>로고</b> SKILL 부제 유지</li>
+              <li><b>정기 회의</b> 매주 금요일 9:30, 30분. 10/16부터 시작</li>
+            </ul>
+
+            <h3>웹사이트 메뉴 구조 (사업팀안)</h3>
+            <div class="table-box">
+              <table>
+                <thead><tr><th>메뉴</th><th>구성</th></tr></thead>
+                <tbody>
+                  <tr><td class="who">신병가이드</td><td>게임 소개, 다운로드. 위키가 생기면 이 아래</td></tr>
+                  <tr><td class="who">전파상</td><td>공지사항, 업데이트·패치, 이벤트. "전체" 하위 메뉴 없이 상위 클릭 시 전체 탭</td></tr>
+                  <tr><td class="who">충성클럽</td><td>가챠 확률 공개 게시판 (썸네일형). 메인에는 에오스 슬라이더로 노출</td></tr>
+                  <tr><td class="who">랭킹</td><td>회색 비활성, 클릭 불가. 이번 오픈 제외</td></tr>
+                  <tr><td class="who">리그</td><td>비노출</td></tr>
+                  <tr><td class="who">행정반</td><td>자료게시판 (월페이퍼·비디오), 자유게시판 (DHO 기능 사용)</td></tr>
+                  <tr><td class="who">지원소</td><td>DHO 구성 그대로</td></tr>
+                  <tr><td class="who">위키</td><td>클로저스 위키 활용. 디자인만 입히고 내용은 운영 측</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="ctx">글로벌 사이트는 바꾸지 않습니다. 한국과 글로벌은 어드민과 게시물을 따로 운영합니다.</p>
+
+            <h3>주요 논의</h3>
+            <ul class="plain">
+              <li><b>성인 인증</b> 파파야플레이는 통합회원이라 가입 단계에서 미성년자를 거를 수 없음. 웹과 클라이언트에서 로그인이 따로 이뤄지고 계정이 연동되지 않아, 웹에서만 막으면 우회 가능. 웹 로그인 단일화는 원빌드 구조상 글로벌까지 영향 (10/12 결정: 인증은 한 번만, 게임 클라이언트 로그인 시 웹 DB의 19세 인증 여부를 확인해 차단)</li>
+              <li><b>사전예약</b> 휴대폰 수집 시 SMS 비용, 개인정보·마케팅·위탁 동의 약관 필요. 본인인증으로 CI를 받으면 번호를 바꿔도 중복을 걸러낼 수 있음. 비용 문제로 반대 시 파파야 회원가입 후 버튼 방식으로 축약</li>
+              <li><b>재화</b> 파파야 코인은 현금 1:1이라 글로벌처럼 환율로 가격을 맞출 수 없음. 가격을 다르게 하면 아이템 테이블이 분리되어 원빌드 불가 (10/12 변경: 빌링사 페이레터에서 게임별 결제 비율을 설정할 수 있어 스포2는 별도 비율로 정리)</li>
+            </ul>
+          </div>
+        </details>
+      </section>
+    </div>
+
+    <div id="panel-agenda" class="panel" hidden>
+      <section id="agenda">
+        <h2>논의 안건</h2>
+        <ul class="plain">
+          <li><b>목적</b> 요청과 검수 단계를 줄여 사전예약 건처럼 중간에 방향이 바뀌는 일을 막기</li>
+          <li><b>이후</b> 결정 사항을 가이드에 반영한 뒤 에릭 실장 공유, 금요일 회의에서 팀 전체 공유</li>
+        </ul>
+        <div class="ag-tools"><button type="button" class="ag-toggle-all">모두 펼치기</button></div>
+        <div class="agendas">
+          <div class="agenda closed">
+            <div class="ag-head"><span class="ag-no">1</span><h3>요청 창구</h3><span class="ag-chev" aria-hidden="true"></span></div>
+            <dl class="ag-kv">
+              <dt>현재</dt><dd>지승철이 고민제 PM과 협의한 뒤 요청을 올림</dd>
+              <dt>문제</dt><dd>협의와 요청이 나뉘어 있어, 요청 내용이 부족할 때 누구에게 다시 확인할지 불분명함. 사전예약 건에서 핵심 변경점(휴대폰 번호 수집)이 요청 단계에서 정리되지 않은 채 작업이 시작됨</dd>
+              <dt>제안</dt><dd>요청을 고민제 PM으로 일원화. 요청한 사람이 요청 내용과 우선순위를 책임짐</dd>
+              <dt class="ag-dec">결정</dt><dd class="ag-res done">웹 작업·수정 요청과 소통은 고민제 PM으로 하나로 모음 (10/13). 해결되지 않는 건은 김충곤 팀장에게</dd>
+            </dl>
+          </div>
+          <div class="agenda closed">
+            <div class="ag-head"><span class="ag-no">2</span><h3>검수 단계</h3><span class="ag-chev" aria-hidden="true"></span></div>
+            <dl class="ag-kv">
+              <dt>현재</dt><dd>지승철 → 고민제 PM → 김충곤 팀장, 3단계 확인</dd>
+              <dt>문제</dt><dd>같은 결과물을 세 번 확인해 수정 요청이 여러 번 나뉘어 들어옴</dd>
+              <dt>제안</dt><dd>1차 지승철 (수정 목록 취합) → 최종 김충곤 팀장 (검수 완료). 고민제 PM은 요청 단계에서 내용 확정</dd>
+              <dt class="ag-dec">결정</dt><dd class="ag-res done">사업팀 내부 검토 후 고민제 PM이 의견을 하나로 정리해 테디 팀장에게 전달. 검수 완료는 김충곤 팀장</dd>
+            </dl>
+          </div>
+          <div class="agenda closed">
+            <div class="ag-head"><span class="ag-no">3</span><h3>확정 방식</h3><span class="ag-chev" aria-hidden="true"></span></div>
+            <dl class="ag-kv">
+              <dt>현재</dt><dd>요청서, 웹기획안, 일정, 디자인, 오픈을 김충곤 팀장이 확정</dd>
+              <dt>문제</dt><dd>금요일 회의(30분)만으로는 확정 대기가 길어질 수 있음</dd>
+              <dt>제안</dt><dd>팀즈에서 수시 확정 가능. 금요일 회의는 기록과 확인 위주</dd>
+              <dt class="ag-dec">결정</dt><dd class="ag-res done">고민제 PM 확인 후 김충곤 팀장 확정. 금요일 회의에서 주간 보고와 함께 확인</dd>
+            </dl>
+          </div>
+          <div class="agenda closed">
+            <div class="ag-head"><span class="ag-no">4</span><h3>부재 시 대리</h3><span class="ag-chev" aria-hidden="true"></span></div>
+            <dl class="ag-kv">
+              <dt>현재</dt><dd>정해져 있지 않음</dd>
+              <dt>문제</dt><dd>김충곤 팀장 부재 시 모든 확정이 멈춤</dd>
+              <dt>제안</dt><dd>부재 시 결정을 대신할 사람 지정</dd>
+              <dt class="ag-dec">결정</dt><dd class="ag-res done">김충곤 팀장 부재 시 고민제 PM이 대리. 10/30 (금) 연차 때도 고민제 PM이 진행하거나 10/29로 이동 검토</dd>
+            </dl>
+          </div>
+          <div class="agenda closed">
+            <div class="ag-head"><span class="ag-no">5</span><h3>약관 담당자와 일정</h3><span class="ag-chev" aria-hidden="true"></span></div>
+            <dl class="ag-kv">
+              <dt>현재</dt><dd>사전예약 페이지 푸터에는 기존 파파야플레이 공통 이용약관·개인정보처리방침 링크를 넣음 (10/15). 사전예약 전용 동의 항목의 담당과 기한은 없음</dd>
+              <dt>문제</dt><dd>휴대폰 번호 수집이 확정되어 개인정보·마케팅·위탁 동의 약관이 필요함. 킥오프 회의에서 가장 오래 걸리는 항목으로 언급됨. 11/17 사전예약 시작에 영향</dd>
+              <dt>제안</dt><dd>사업팀 내 약관 담당과 기한 지정, 사내 개인정보·법무 검토 경로 확인</dd>
+              <dt class="ag-dec">결정</dt><dd class="ag-res part">김충곤 팀장 확인 중 (10/15). 사전예약 동의 항목 작성 담당과 완료일은 미정</dd>
+            </dl>
+          </div>
+          <div class="agenda closed">
+            <div class="ag-head"><span class="ag-no">6</span><h3>심사용 홈페이지 범위 (11/13)</h3><span class="ag-chev" aria-hidden="true"></span></div>
+            <dl class="ag-kv">
+              <dt>현재</dt><dd>김영환 팀장과 "11/16까지 확인 가능한 사이트"로만 합의. 어디까지 완성되어야 하는지 정해지지 않음 (10/15 변경: 11/13 목표, 최후 11/16)</dd>
+              <dt>문제</dt><dd>카드사 심사는 화면만이 아니라 이용약관, 환불 정책, 사업자 정보 표기, 충전·결제 흐름을 확인하는 경우가 많음. 기준이 없으면 11/16에 맞춰도 심사를 신청하지 못할 수 있음</dd>
+              <dt>제안</dt><dd>PG사에 심사 필수 항목을 확인해 11/16 완료 기준으로 정함. 전체 메뉴를 모두 완성할지, 심사 필수 항목만 먼저 완성하고 나머지는 12/8 전까지 마무리할지 결정</dd>
+              <dt class="ag-dec">결정</dt><dd class="ag-res done">11/13까지 PG사·연령제한 심사용 테스트 페이지 (최후 11/16). 홈 화면, 결제(충전) 페이지, 로그인·마이페이지(파파야플레이 공통 페이지 연결), 구조·구성 확인 수준. 결제는 기존 레이아웃에서 SF2만 선택. 나머지 메뉴는 "준비중". 실서비스 기능은 11/13 이후 (10/16)</dd>
+            </dl>
+          </div>
+          <div class="agenda closed">
+            <div class="ag-head"><span class="ag-no">7</span><h3>SF2 공통 채널 신설</h3><span class="ag-chev" aria-hidden="true"></span></div>
+            <dl class="ag-kv">
+              <dt>현재</dt><dd>요청은 지라, 디자인팀과 사업팀 간 소통은 팀즈로 하고 있음. 사업·디자인·개발·인프라가 모두 있는 공통 채널은 없음</dd>
+              <dt>문제</dt><dd>일정 변경, 긴급 이슈, 결정 사항이 팀별로 따로 전달되어 다른 팀은 모르는 경우가 생김. 클로저스 일정 변경 건처럼 관련자가 빠진 채 결정되는 일이 반복될 수 있음</dd>
+              <dt>제안</dt><dd>현재 참여 인원 전원이 있는 SF2 공통 채널을 신설해 일정 변경, 긴급 이슈, 결정 사항, 회의 내용을 공유. 요청은 지라, 팀 간 실무 소통은 팀즈 그대로 유지</dd>
+              <dt class="ag-dec">결정</dt><dd class="ag-res done">10/15 SF2 공통 채널 신설 완료. 일정 변경, 긴급 이슈, 결정 사항, 회의 내용 공유. 요청은 지라, 팀 간 실무 소통은 팀즈 유지</dd>
+            </dl>
+          </div>
+          <div class="agenda closed">
+            <div class="ag-head"><span class="ag-no">8</span><h3>수정 마감과 QA 일정</h3><span class="ag-chev" aria-hidden="true"></span></div>
+            <dl class="ag-kv">
+              <dt>현재</dt><dd>수정 마감일과 QA 기간이 정해져 있지 않음. 웹 개발은 11/13 이후 실서비스 기능·QA를 12/10까지 맞추는 것을 목표로 보고 (10/16)</dd>
+              <dt>문제</dt><dd>확정 이후 범위 추가를 막는 규칙은 있지만 언제부터인지가 없어 오픈 직전까지 수정 요청이 들어올 수 있음. QA 기간이 없으면 지승철 참여 시점도 정할 수 없음</dd>
+              <dt>제안</dt><dd>심사용 홈페이지: 11/9 개발 완료 → 11/10~12 QA·수정 → 11/13 완성 (카드사 심사는 실제 홈페이지로 신청하므로 완성 전 QA 필요). 사전예약: 11/6 수정 마감 → 11/9~13 QA·콘텐츠 반영 → 11/17 시작. 홈페이지: 11/16~27 1차 QA (전체 기능·화면 점검) → 11/27 수정·콘텐츠 입력 마감 → 11/30~12/4 2차 QA (수정 반영 확인) → 12/7 최종 확인 → 12/8 오픈. 1차 QA는 심사용 화면부터 시작하고, 나머지 메뉴는 완성되는 대로 점검. 웹 개발 목표 12/10은 오픈 이후라 12/8 전에 끝낼 범위를 나눠야 함. 11/9~13 주는 사전예약 QA와 심사용 홈페이지 QA가 겹침. 일정표에 "제안"으로 표시해 둠</dd>
+              <dt class="ag-dec">결정</dt><dd class="ag-res open">논의 필요. 심사용 홈페이지 QA 시작일·마감일, 수정 마감일 확정 후 일정표의 "제안" 표시 제거</dd>
+            </dl>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      v1.0 · 2026.10.12
+    </footer>
+  </main>
+</div>
+
+<script>
+  (function () {
+    var tabs = ['schedule', 'minutes', 'agenda'];
+    var wrap = document.querySelector('.wrap');
+    function show() {
+      var h = (location.hash || '').slice(1);
+      var cur = tabs.indexOf(h) >= 0 ? h : 'guide';
+      ['guide', 'schedule', 'minutes', 'agenda'].forEach(function (k) {
+        var panel = document.getElementById('panel-' + k);
+        var tab = document.getElementById('tab-' + k);
+        panel.hidden = k !== cur;
+        if (k === cur) tab.setAttribute('aria-current', 'page'); else tab.removeAttribute('aria-current');
+      });
+      wrap.classList.toggle('single', cur !== 'guide');
+      if (tabs.indexOf(h) >= 0 || h === 'guide') window.scrollTo(0, 0);
+    }
+    window.addEventListener('hashchange', show);
+    show();
+  })();
+</script>
+
+<script>
+  (function () {
+    var START = new Date(2026, 9, 1);
+    var END = new Date(2026, 11, 12);
+    var PX = 8;
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var days = Math.round((today - START) / 86400000);
+    var inRange = today >= START && today <= END;
+    var left = (days * PX + PX / 2) + 'px';
+    document.querySelectorAll('.g-today, .g-todaytag').forEach(function (el) {
+      el.hidden = !inRange;
+      el.style.left = left;
+    });
+    var tag = document.querySelector('.g-todaytag');
+    if (tag) tag.textContent = '오늘 ' + (today.getMonth() + 1) + '/' + today.getDate();
+  })();
+</script>
+
+<script>
+  (function () {
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.agenda'));
+    var allBtn = document.querySelector('.ag-toggle-all');
+    function sync() {
+      var anyClosed = cards.some(function (c) { return c.classList.contains('closed'); });
+      if (allBtn) allBtn.textContent = anyClosed ? '모두 펼치기' : '모두 접기';
+    }
+    function setOpen(card, open) {
+      card.classList.toggle('closed', !open);
+      var h = card.querySelector('.ag-head');
+      if (h) h.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    cards.forEach(function (card) {
+      var head = card.querySelector('.ag-head');
+      if (!head) return;
+      head.setAttribute('role', 'button');
+      head.setAttribute('tabindex', '0');
+      head.setAttribute('aria-expanded', 'false');
+      function toggle() { setOpen(card, card.classList.contains('closed')); sync(); }
+      head.addEventListener('click', toggle);
+      head.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
+    });
+    if (allBtn) allBtn.addEventListener('click', function () {
+      var open = cards.some(function (c) { return c.classList.contains('closed'); });
+      cards.forEach(function (c) { setOpen(c, open); });
+      sync();
+    });
+    sync();
+  })();
+</script>
