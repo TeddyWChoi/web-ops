@@ -538,6 +538,7 @@ UWO_LOG = '''<details class="mtg" data-p="uwo"><summary><span class="mdate">10/1
 <li><b>개발팀 일정</b> 스포2 빌링 · 세팅 · API 정리, 클로저스 Steam 오픈(11월 중순) 대응과 겹침</li>
 </ul></div></details>'''
 no_records = UWO_LOG + JP_LOG
+DEPT = DEPT_LOG
 
 EXTRA_CSS = '''
 [hidden] { display: none !important; }
@@ -717,6 +718,7 @@ page = f'''<!doctype html>
       </section>
       <section>
         <h2>결정 기록 · 회의록</h2>
+        {DEPT}
         <div class="proj-sec" data-p="sf2"><h3>{esc(sf2["name"])}</h3>{sf2_minutes}</div>
         {no_records}
       </section>
