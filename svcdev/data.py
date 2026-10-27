@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
 from sf2_schedule import SF2_RANGE, SF2_TEAMS, SF2_MILES, SF2_EST_MILES, SF2_META, SF2_UPCOMING
 D = lambda m, d, y=2026: date(y, m, d)
 
-BASE = D(10, 16)          # 페이지 기준 날짜 (팀별 현황·충돌 계산 기준)
+BASE = D(10, 27)          # 페이지 기준 날짜 (팀별 현황·충돌 계산 기준)
 VERSION = 'v1.1'
 
 # 상태: ok 정상 / warn 주의 / risk 위험 / open 확인 필요
@@ -17,8 +17,8 @@ PROJECTS = [
          miles=SF2_MILES, est_miles=SF2_EST_MILES),  # 스포2 일정은 shared/sf2_schedule.py
     dict(id='latale', short='라테일', name='라테일 북미 신규 런처',
          decider='윌 팀장', pm='윌 팀장', planner='테디 팀장', design='테디 팀장', dev='성경진',
-         open='12/17 북미 LIVE', stage='런처 프론트엔드 · API 연동, 웹 호스팅 인프라',
-         next='10/16 런처 프론트엔드 개발 완료', status='plan', status_txt='진행 중',
+         open='12/17 북미 LIVE', stage='런처 테스트 URL 액토즈 전달 완료, 설치패키지 연동테스트 대기',
+         next='12/11 게이트② 통합 QA 완료', status='plan', status_txt='진행 중',
          miles=[(D(8, 14), '킥오프'), (D(11, 6), '게이트①'), (D(12, 11), '게이트②'), (D(12, 17), 'LIVE')],
          est_miles=set()),
     dict(id='closers', short='클로저스', name='클로저스 친구초대 웹이벤트',
@@ -72,10 +72,10 @@ LATALE_TEAMS = [
         ('최종 에셋 · 스타일 가이드 개발 핸드오프', D(9, 22), D(9, 25), 'done', False, '완료', ['테디 팀장'], True),
     ]),
     ('플랫폼', '성경진', [
-        ('런처 웹 프론트엔드 개발 (로그인 / 메인)', D(9, 14), D(10, 16), 'now', False, '10/16 완료 목표', PLAT, True),
-        ('파파야 API 연동 + 런처 설정', D(9, 28), D(10, 23), 'now', False, '10/23 완료 목표', PLAT, True),
-        ('스테이징 통합테스트 + 런처 WEB URL 액토즈 전달 ★', D(11, 2), D(11, 6), 'warn', False, '게이트① · 프론트 + API 선행', PLAT, True),
-        ('액토즈 설치패키지 연동테스트 + QA 이슈 대응', D(11, 9), D(12, 11), 'plan', False, 'URL 전달 / 빌드 선행', PLAT, True),
+        ('런처 웹 프론트엔드 개발 (로그인 / 메인)', D(9, 14), D(10, 16), 'done', False, '완료', PLAT, True),
+        ('파파야 API 연동 + 런처 설정', D(9, 28), D(10, 23), 'done', False, '완료', PLAT, True),
+        ('스테이징 통합테스트 + 런처 테스트 URL 액토즈 전달 ★', D(10, 23), D(10, 27), 'done', False, '완료 · 게이트① 조기 통과 (10/27 확인)', PLAT, True),
+        ('액토즈 설치패키지 연동테스트 + QA 이슈 대응', D(11, 9), D(12, 11), 'plan', False, 'URL 전달 완료 · 액토즈 빌드 대기', PLAT, True),
     ]),
     ('SRE', '담당 확인 필요', [
         ('런처 웹 호스팅 · 배포 인프라 구축 (도메인 / TLS / CDN)', D(9, 7), D(10, 23), 'now', False, '10/23 완료 목표', [], False),
@@ -83,7 +83,7 @@ LATALE_TEAMS = [
         ('전환 런처 배포 구성 + 모니터링', D(11, 9), D(11, 27), 'plan', False, '정책 확정 선행', [], False),
     ]),
     ('QA', '담당 확인 필요', [
-        ('통합 QA (설치 / 전환 / 접속 / 업데이트 / Steam) ★', D(11, 9), D(12, 11), 'warn', False, '게이트② · URL 전달 선행', [], False),
+        ('통합 QA (설치 / 전환 / 접속 / 업데이트 / Steam) ★', D(11, 9), D(12, 11), 'warn', False, '게이트② · URL 전달 완료', [], False),
     ]),
     ('전체', '', [
         ('배포 리허설 · 롤백 → Go / No-Go → LIVE', D(12, 15), D(12, 17), 'plan', False, 'QA 완료 선행', [], False),
@@ -115,9 +115,6 @@ OV_RANGE = (D(8, 1), D(1, 31, 2027), 4)
 # 2주 안 일정 (날짜 문구, 프로젝트, 내용, 담당, 상태 클래스, 상태 문구)
 UPCOMING = [(d, '스포2', c, w, sc, st) for d, c, w, sc, st in SF2_UPCOMING] + [
     ('10/14', 'UWO', '사토시 협의 결과 공유, 10/15(목) 회의 진행 여부 알림', '이진우 실장', 'plan', '예정'),
-    ('10/16', '라테일', '런처 웹 프론트엔드 (로그인 / 메인) 개발 완료 (PDT)', '성경진', 'plan', '진행 중'),
-    ('10/23', '라테일', '신규 런처 QA. 실제 QA용 런처 아직 못 받음 (개발사 요청 중)', '성경진', 'warn', '런처 대기'),
-    ('10/23', '라테일', '파파야 API 연동 완료 + 웹 호스팅 · 배포 인프라 구축 (PDT)', '성경진 · SRE', 'plan', '진행 중'),
 ]
 
 # 프로젝트 등록 체크리스트 (05 문서). key -> (구분, 항목)
@@ -216,7 +213,7 @@ SERVICES = [
     ]),
     ('WR', []),
     ('La Tale', [
-        ('신규 런처 QA', '10/23 예정 · QA용 런처 미수령', 'warn', '런처 대기', 'latale'),
+        ('신규 런처 테스트 URL 액토즈 전달', '10/27 확인', 'done', '완료', 'latale'),
         ('9월 로열티 리포트 매출 오차 확인용 캐시 아이템 로그 제공', '', 'done', '완료', None),
     ]),
     ('UWO', [

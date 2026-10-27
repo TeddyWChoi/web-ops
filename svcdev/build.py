@@ -269,8 +269,8 @@ def latale_section():
         <div class="proj-sec"><h3>상세 일정</h3>
         {project_gantt(LATALE_RANGE, LATALE_TEAMS, LATALE_MILES)}
         <ul class="plain note"><li>8~9월 마감 항목은 일정표 기준으로 완료 표시. 실제 완료 여부 확인 필요</li><li>★ 표시는 주 선행 작업. 늦어지면 다음 게이트가 밀림</li></ul></div>
-        <div class="risk"><strong>다음 게이트: 11/6 스테이징 통합테스트 + 런처 WEB URL 액토즈 전달</strong>
-        <p>10/16 프론트엔드 완료와 10/23 파파야 API 연동 · 웹 호스팅 인프라 구축이 선행입니다. URL 전달이 늦어지면 11/9부터 시작하는 설치패키지 연동테스트와 통합 QA가 함께 밀리고, 12/11 게이트②와 12/17 LIVE에 영향이 갑니다.</p></div>
+        <div class="risk"><strong>다음 게이트: 12/11 통합 QA 완료 (게이트②)</strong>
+        <p>게이트①(런처 테스트 URL 액토즈 전달)은 10/27 확인 기준 완료. 이제 액토즈 설치패키지 빌드를 받아 연동테스트와 통합 QA를 진행합니다. 액토즈 빌드가 늦으면 연동테스트·통합 QA가 함께 밀리고 12/11 게이트②와 12/17 LIVE에 영향이 갑니다.</p></div>
         <div class="proj-sec"><h3>확인 필요 항목</h3><ul class="plain todo">
           <li><span class="chip">확인 필요</span> 플랫폼 업무 담당이 성경진 단독인지. 인력별 현황은 성경진 기준으로 표시</li>
           <li><span class="chip">확인 필요</span> SRE · QA 담당</li>
