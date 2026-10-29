@@ -331,9 +331,9 @@ COMMON_AGENDAS = ''.join([
            '각 프로젝트 PM이 회의 후 일정 · 결정을 공유하고, 테디 팀장은 양식과 역할 · 절차 반영을 맡음. 각 팀 팀장이 크로스 체크',
            'part', '일부 결정. 스포2 적용, 다른 프로젝트 확인 필요'),
     agenda('공통-6', '정기 회의 범위',
-           '정기 회의는 스포2 금요일 회의 하나',
+           '정기 회의는 스포2 목요일 회의 하나',
            '다른 프로젝트는 진행 상황을 확인하는 자리가 없음',
-           '프로젝트별 회의를 따로 둘지, 금요일 회의 뒤에 전 프로젝트 현황 확인을 붙일지 결정',
+           '프로젝트별 회의를 따로 둘지, 정기 회의 뒤에 전 프로젝트 현황 확인을 붙일지 결정',
            'open', '논의 필요'),
 ])
 
@@ -681,7 +681,7 @@ page = f'''<!doctype html>
 
       <section id="p-sf2" class="proj" hidden>
         <h2>{esc(sf2["name"])} {st_badge(sf2["status"], sf2["status_txt"])}</h2>
-        <dl class="pkv"><dt>결정권자</dt><dd>김충곤 팀장 (부재 시 고민제 PM)</dd><dt>PM</dt><dd>고민제 PM</dd><dt>웹기획</dt><dd>테디 팀장</dd><dt>디자인</dt><dd>테디 팀장</dd><dt>웹 개발</dt><dd>오중수 (총괄 김영환 팀장)</dd><dt>오픈 목표</dt><dd>12/8 웹사이트 오픈</dd><dt>정기 회의</dt><dd>매주 금요일 9:30~10:00</dd><dt>적용 범위</dt><dd>공식 웹사이트, 사전예약 페이지, 이벤트 · 프로모션 페이지</dd><dt>운영 가이드</dt><dd><a href="https://claude.ai/artifact/U44ZKSYqTNmf6L6irVgchM" target="_blank" rel="noopener">스포2 웹 업무 가이드</a> (업무별 담당, 금요일 회의, 논의 안건)</dd></dl>
+        <dl class="pkv"><dt>결정권자</dt><dd>김충곤 팀장 (부재 시 고민제 PM)</dd><dt>PM</dt><dd>고민제 PM</dd><dt>웹기획</dt><dd>테디 팀장</dd><dt>디자인</dt><dd>테디 팀장</dd><dt>웹 개발</dt><dd>오중수 (총괄 김영환 팀장)</dd><dt>오픈 목표</dt><dd>12/8 (12/3 최종 결정, 지연 시 12/22)</dd><dt>정기 회의</dt><dd>매주 목요일 (10/29~)</dd><dt>적용 범위</dt><dd>공식 웹사이트, 사전예약 페이지, 이벤트 · 프로모션 페이지</dd><dt>운영 가이드</dt><dd><a href="https://claude.ai/artifact/U44ZKSYqTNmf6L6irVgchM" target="_blank" rel="noopener">스포2 웹 업무 가이드</a> (업무별 담당, 금요일 회의, 논의 안건)</dd></dl>
 
         <div class="proj-sec" id="sf2-todo"><h3>확인 필요 항목</h3>{sf2_todo}</div>
         <div class="proj-sec" id="sf2-schedule"><h3>상세 일정</h3>
